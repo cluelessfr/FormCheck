@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">FormCheck</string>
+    <string name="video_description">Analyze a prerecorded squat video and receive movement feedback.</string>
+    <string name="select_video">Select a video</string>
+    <string name="privacy_message">Your video stays on this device and is not uploaded.</string>
 </resources>
