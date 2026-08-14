@@ -27,3 +27,5 @@ I was also able to verify the file selection using the Firebase remote Android d
 
 ## 08/13/2026
 I finally added the MediaPipe Tasks Vision dependency. Currently, I have only added it into the Gradle build, not yet implemented features like pose detection and video analysis.
+
+I also wrote PoseLandmarkerManager to initialize the vision model. It was tested with the emulator and passed. This only verifies model initialization, not frame processing.
