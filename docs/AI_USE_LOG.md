@@ -24,3 +24,6 @@ I wrote the code for calculating the angle between three points. The middle poin
 I wrote the code which determines the quality of the landmarks (points). The visibility describes how well the body landmark is visible or obstructed. The presence describes if the body landmark is present within the frame itself. This passed the reliability threshold tests, but MediaPipe is not integrated yet and final "minimum thresholds" have not been selected yet.
 
 I was also able to verify the file selection using the Firebase remote Android device on a Google Pixel 10. The status now changed from "No video selected" to "Video selected". This test does not confirm video decoding or MediaPipe analysis.
+
+## 08/13/2026
+I finally added the MediaPipe Tasks Vision dependency. Currently, I have only added it into the Gradle build, not yet implemented features like pose detection and video analysis.
