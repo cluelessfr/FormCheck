@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Uri selectedVideoUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,8 +27,9 @@ public class MainActivity extends AppCompatActivity {
         Button selectVideoButton = findViewById(R.id.selectVideoButton);
         TextView selectionStatusText = findViewById(R.id.selectionStatusText);
 
-        ActivityResultLauncher<String[]> videoPickerLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
-            if (uri != null) {
+        ActivityResultLauncher<String[]> videoPickerLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), inputUri -> {
+            if (inputUri != null) {
+                selectedVideoUri = inputUri;
                 selectionStatusText.setText(R.string.video_selected);
             }
         });
