@@ -32,3 +32,6 @@ I also wrote PoseLandmarkerManager to initialize the vision model. It was tested
 
 ## 08/15/2026
 I added a method that receives an already decoded video frame and timestamp and sends it to MediaPipe. It rejects null images and negative timestamps. All tests pass, but so far I have only tested with a synthetic image, not a real image.
+
+## 09/07/2026
+I wrote the VideoFrameDecoder function to be able to read a video's duration using Android's media metadata system. I also wrote an emulator test to go along with this that detected the duration of a 3-second video (it passed, and Codex used ffmpeg to crop the original video into the 3 second video). So far this can only do metadata reading, but in the future it will be able to do pose analysis and more.  
