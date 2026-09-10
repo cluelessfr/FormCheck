@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.runner.RunWith;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -43,6 +44,63 @@ public class VideoFrameDecoderInstrumentedTest {
         }
 
         finally {
+            cachedVideoFile.delete();
+        }
+    }
+
+    @Test
+    public void testReturnsFrameFromTimestamp() throws IOException {
+        Context testContext = InstrumentationRegistry.getInstrumentation().getContext();
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+        File cachedVideoFile = new File(appContext.getCacheDir(), "test_video.mp4");
+
+        try (InputStream inputStream = testContext.getAssets().open("test_video.mp4");
+             FileOutputStream outputStream = new FileOutputStream(cachedVideoFile);) {
+
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }
+
+        Uri uri = Uri.fromFile(cachedVideoFile);
+
+        try (VideoFrameDecoder decoder = new VideoFrameDecoder(appContext, uri)) {
+            Bitmap frame = decoder.getFrameAtMilliseconds(1000);
+            Assert.assertNotNull(frame);
+            Assert.assertTrue(frame.getWidth() > 0);
+            Assert.assertTrue(frame.getHeight() > 0);
+        } finally {
+            cachedVideoFile.delete();
+        }
+    }
+
+    @Test
+    public void testNegativeTimestampThrowsError() throws IOException {
+        Context testContext = InstrumentationRegistry.getInstrumentation().getContext();
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+        File cachedVideoFile = new File(appContext.getCacheDir(), "test_video.mp4");
+
+        try (InputStream inputStream = testContext.getAssets().open("test_video.mp4");
+             FileOutputStream outputStream = new FileOutputStream(cachedVideoFile);) {
+
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }
+
+        Uri uri = Uri.fromFile(cachedVideoFile);
+
+        try (VideoFrameDecoder decoder = new VideoFrameDecoder(appContext, uri)) {
+            Assert.assertThrows(IllegalArgumentException.class, () -> decoder.getFrameAtMilliseconds(-1));
+        } finally {
             cachedVideoFile.delete();
         }
     }
