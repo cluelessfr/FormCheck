@@ -9,7 +9,7 @@ import com.google.mediapipe.tasks.vision.core.RunningMode;
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker;
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult;
 
-public class PoseLandmarkerManager {
+public class PoseLandmarkerManager implements AutoCloseable {
 
     private final PoseLandmarker poseLandmarker;
 
@@ -29,6 +29,7 @@ public class PoseLandmarkerManager {
         poseLandmarker = PoseLandmarker.createFromOptions(context, options);
     }
 
+    @Override
     public void close() {
         poseLandmarker.close();
     }
