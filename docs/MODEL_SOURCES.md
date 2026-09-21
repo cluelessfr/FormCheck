@@ -10,3 +10,13 @@ License: Apache License 2.0
 Reason Selected: Better landmark accuracy than Lite, and faster processing and smaller size compared to Heavy
 
 Limitation: Have not checked accuracy with FormCheck
+
+
+## Video: squat-demonstration.mp4
+Source: https://commons.wikimedia.org/wiki/File:Squat_-_exercise_demonstration_video.webm
+
+Creator: FitnessScape
+
+License: [CC BY 3.0 License](https://creativecommons.org/licenses/by/3.0/)
+
+Note: Converted the provided webm file to a mp4 file for testing
