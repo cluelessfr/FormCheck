@@ -6,6 +6,7 @@ import android.net.Uri;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.taran.formcheck.analysis.LandmarkQualityGate;
 import com.taran.formcheck.video.VideoFrameDecoder;
 
 import org.junit.Assert;
@@ -87,6 +88,19 @@ public class VideoPoseSequenceProcessorInstrumentedTest {
 
             Assert.assertEquals(8, results.size());
             Assert.assertEquals(1, results.get(0).getResult().landmarks().size());
+
+            LandmarkQualityGate gate = new LandmarkQualityGate(0.5, 0.5);
+            VideoKneeAngleSequenceAnalyzer analyzer = new VideoKneeAngleSequenceAnalyzer(gate);
+            List<TimestampedKneeAngle> timestampedResults = analyzer.analyze(results);
+
+            System.out.println("Total Number Accepted: " + timestampedResults.size());
+            for (TimestampedKneeAngle angle : timestampedResults) {
+                System.out.println("Timestamp: " + angle.getTimestampMilliseconds() + "; Side: " + angle.getSide() + "; Degrees: " + angle.getAngleDegrees());
+            }
+
+            Assert.assertEquals(8, timestampedResults.size());
+            Assert.assertTrue(timestampedResults.get(2).getAngleDegrees() < timestampedResults.get(1).getAngleDegrees());
+            Assert.assertTrue(timestampedResults.get(5).getAngleDegrees() < timestampedResults.get(4).getAngleDegrees());
         }
 
         finally {
