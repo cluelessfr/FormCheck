@@ -41,3 +41,6 @@ I wrote a function that extracts a bitmap when given a video timestamp. I then a
 
 ## 09/19/2026
 Now I added a few things. First I added a function that can sample frames at different intervals and stores the MediaPipe result with the timestamp of the frame. I also added hip/knee/ankle extraction for both sides and also confidence-based leg section. Codex wrote a few methods, and I wrote the rest. I then added timestamped knee angle measurements, and also connected the leg selector to the angle calculator. Finally, I added a sequence analyzer that keeps the valid measurements and skips the unclear frames. I added test for all these functions
+
+## 09/23/2026
+I added a function to detect the first squat repetition, with detector thresholds and added instrumented tests. Codex implemented the method to detect the first repetition given a list of TimestampedKneeAngles. The detector now recognizes standing, bottom, and returning to standing angles and returns empty for incomplete sequences. All 51 JVM tests passed. The thresholds used for the standing and bottom angles were for testing and not universal standards.

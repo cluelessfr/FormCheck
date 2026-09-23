@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(AndroidJUnit4.class)
 public class VideoPoseSequenceProcessorInstrumentedTest {
@@ -101,6 +102,15 @@ public class VideoPoseSequenceProcessorInstrumentedTest {
             Assert.assertEquals(8, timestampedResults.size());
             Assert.assertTrue(timestampedResults.get(2).getAngleDegrees() < timestampedResults.get(1).getAngleDegrees());
             Assert.assertTrue(timestampedResults.get(5).getAngleDegrees() < timestampedResults.get(4).getAngleDegrees());
+
+            SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
+            Optional<SquatRepetition> repetition = detector.detect(timestampedResults);
+
+            Assert.assertTrue(repetition.isPresent());
+            Assert.assertEquals(1000, repetition.get().getStandingStartTimestamp());
+            Assert.assertEquals(2000, repetition.get().getLowestAngleTimestamp());
+            Assert.assertEquals(4000, repetition.get().getReturnToStandingTimestamp());
+
         }
 
         finally {
