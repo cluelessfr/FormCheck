@@ -111,4 +111,39 @@ public class SquatRepetitionDetectorTest {
 
         Assert.assertEquals(Optional.empty(), detector.detect(angles));
     }
+
+    @Test
+    public void testAnalyzeMethodCompleteRepetition() {
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
+        List<TimestampedKneeAngle> angles = new ArrayList<>();
+
+        TimestampedKneeAngle standingStart = new TimestampedKneeAngle(0, BodySide.LEFT, 170);
+        TimestampedKneeAngle descending = new TimestampedKneeAngle(1000, BodySide.LEFT, 145);
+        TimestampedKneeAngle bottom = new TimestampedKneeAngle(2000, BodySide.LEFT, 110);
+        TimestampedKneeAngle ascending = new TimestampedKneeAngle(3000, BodySide.LEFT, 140);
+        TimestampedKneeAngle returnToStanding = new TimestampedKneeAngle(4000, BodySide.LEFT, 170);
+
+        angles.add(standingStart);
+        angles.add(descending);
+        angles.add(bottom);
+        angles.add(ascending);
+        angles.add(returnToStanding);
+
+        SquatAnalysisResult result = detector.analyze(angles);
+
+        Assert.assertEquals(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, result.getOutcome());
+        Assert.assertNotNull(result.getRepetition());
+        Assert.assertEquals(0, result.getRepetition().getStandingStartTimestamp());
+        Assert.assertEquals(2000, result.getRepetition().getLowestAngleTimestamp());
+        Assert.assertEquals(4000, result.getRepetition().getReturnToStandingTimestamp());
+    }
+
+    @Test
+    public void testAnalyzeMethodInsufficientEvidence() {
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
+        SquatAnalysisResult result = detector.analyze(new ArrayList<>());
+
+        Assert.assertEquals(SquatAnalysisOutcome.INSUFFICIENT_EVIDENCE, result.getOutcome());
+        Assert.assertNull(result.getRepetition());
+    }
 }

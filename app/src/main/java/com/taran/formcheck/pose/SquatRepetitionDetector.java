@@ -76,4 +76,15 @@ public final class SquatRepetitionDetector {
 
         return Optional.empty();
     }
+
+    public SquatAnalysisResult analyze(List<TimestampedKneeAngle> angles) {
+        Optional<SquatRepetition> repetition = detect(angles);
+
+        if (repetition.isPresent()) {
+            return new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition.get());
+        }
+        else {
+            return new SquatAnalysisResult(SquatAnalysisOutcome.INSUFFICIENT_EVIDENCE, null);
+        }
+    }
 }
