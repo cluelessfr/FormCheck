@@ -26,11 +26,15 @@ public class MainActivity extends AppCompatActivity {
 
         Button selectVideoButton = findViewById(R.id.selectVideoButton);
         TextView selectionStatusText = findViewById(R.id.selectionStatusText);
+        Button analyzeVideoButton = findViewById(R.id.analyzeVideoButton);
+        TextView analysisResultText = findViewById(R.id.analysisResultText);
 
         ActivityResultLauncher<String[]> videoPickerLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), inputUri -> {
             if (inputUri != null) {
                 selectedVideoUri = inputUri;
                 selectionStatusText.setText(R.string.video_selected);
+                analyzeVideoButton.setEnabled(true);
+                analysisResultText.setText(R.string.analysis_not_started);
             }
         });
 

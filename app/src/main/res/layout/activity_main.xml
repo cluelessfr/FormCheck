@@ -60,6 +60,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/selectVideoButton"
+        app:layout_constraintBottom_toTopOf="@id/analyzeVideoButton" />
+
+    <Button
+        android:id="@+id/analyzeVideoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/analyze_video"
+        android:enabled="false"
+        android:minHeight="48dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/selectionStatusText"
+        app:layout_constraintBottom_toTopOf="@id/analysisResultText" />
+
+    <TextView
+        android:id="@+id/analysisResultText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="@string/analysis_not_started"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/analyzeVideoButton"
         app:layout_constraintBottom_toTopOf="@id/privacyText" />
 
     <TextView
@@ -74,7 +102,7 @@
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/selectionStatusText"
+        app:layout_constraintTop_toBottomOf="@id/analysisResultText"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">FormCheck</string>
-    <string name="video_description">Analyze a prerecorded squat video and receive movement feedback.</string>
+    <string name="video_description">Analyze a prerecorded squat video to check whether a complete repetition is detected.</string>
     <string name="select_video">Select a video</string>
     <string name="privacy_message">Your video stays on this device and is not uploaded.</string>
     <string name="no_video_selected">No video selected</string>
     <string name="video_selected">Video selected</string>
+    <string name="analyze_video">Analyze video</string>
+    <string name="analysis_not_started">Select a video to begin analysis.</string>
+    <string name="analysis_in_progress">Analyzing video on this device…</string>
+    <string name="complete_repetition_detected">Complete squat repetition detected.</string>
+    <string name="insufficient_evidence">Not enough evidence to detect a complete squat repetition.</string>
+    <string name="analysis_failed">Analysis could not be completed for this video.</string>
 </resources>
