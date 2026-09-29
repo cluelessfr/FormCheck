@@ -13,8 +13,39 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import android.net.Uri;
 import android.widget.Button;
 import android.widget.TextView;
+import android.util.Log;
+
+import com.taran.formcheck.analysis.LandmarkQualityGate;
+import com.taran.formcheck.pose.PoseLandmarkerManager;
+import com.taran.formcheck.pose.SquatAnalysisOutcome;
+import com.taran.formcheck.pose.SquatAnalysisResult;
+import com.taran.formcheck.pose.SquatRepetitionDetector;
+import com.taran.formcheck.pose.TimestampedPoseResult;
+import com.taran.formcheck.pose.VideoKneeAngleSequenceAnalyzer;
+import com.taran.formcheck.pose.VideoPoseSequenceProcessor;
+import com.taran.formcheck.pose.VideoSquatSequenceAnalyzer;
+import com.taran.formcheck.video.VideoFrameDecoder;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final long FRAME_INTERVAL_MILLISECONDS = 1000;
+
+    private static final double MINIMUM_LANDMARK_VISIBILITY = 0.5;
+
+    private static final double MINIMUM_LANDMARK_PRESENCE = 0.5;
+
+    private static final double STANDING_ANGLE_THRESHOLD = 160;
+
+    private static final double BOTTOM_ANGLE_THRESHOLD = 120;
+
+    private static final String TAG = "MainActivity";
+
+    private final ExecutorService analysisExecutor = Executors.newSingleThreadExecutor();
 
     private Uri selectedVideoUri;
 
@@ -40,10 +71,80 @@ public class MainActivity extends AppCompatActivity {
 
         selectVideoButton.setOnClickListener(v -> videoPickerLauncher.launch(new String[]{"video/*"}));
 
+        analyzeVideoButton.setOnClickListener(v -> {
+            Uri videoUri = selectedVideoUri;
+
+            if (videoUri == null) {
+                return;
+            }
+
+            analyzeVideoButton.setEnabled(false);
+            selectVideoButton.setEnabled(false);
+            analysisResultText.setText(R.string.analysis_in_progress);
+
+            analysisExecutor.submit(() -> {
+                try {
+                    SquatAnalysisResult result = analyzeVideo(videoUri);
+
+                    int analysisResult;
+                    if (result.getOutcome() == SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED) {
+                        analysisResult = R.string.complete_repetition_detected;
+                    }
+                    else {
+                        analysisResult = R.string.insufficient_evidence;
+                    }
+
+                    runOnUiThread(() -> {
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+
+                        analysisResultText.setText(analysisResult);
+                        selectVideoButton.setEnabled(true);
+                        analyzeVideoButton.setEnabled(true);
+                    });
+                }
+                catch (Exception exception) {
+                    Log.e(TAG, "Video analysis failed", exception);
+
+                    runOnUiThread(() -> {
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+
+                        analysisResultText.setText(R.string.analysis_failed);
+                        selectVideoButton.setEnabled(true);
+                        analyzeVideoButton.setEnabled(true);
+                    });
+                }
+            });
+        });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    private SquatAnalysisResult analyzeVideo(Uri videoUri) throws IOException {
+        try (VideoFrameDecoder decoder = new VideoFrameDecoder(getApplicationContext(), videoUri);
+             PoseLandmarkerManager manager = new PoseLandmarkerManager(getApplicationContext())) {
+            List<TimestampedPoseResult> timestampedPoseResults = VideoPoseSequenceProcessor.processVideoPoseSequence(decoder, manager, FRAME_INTERVAL_MILLISECONDS);
+
+            LandmarkQualityGate gate = new LandmarkQualityGate(MINIMUM_LANDMARK_VISIBILITY, MINIMUM_LANDMARK_PRESENCE);
+            VideoKneeAngleSequenceAnalyzer analyzer = new VideoKneeAngleSequenceAnalyzer(gate);
+            SquatRepetitionDetector repetitionDetector = new SquatRepetitionDetector(STANDING_ANGLE_THRESHOLD, BOTTOM_ANGLE_THRESHOLD);
+            VideoSquatSequenceAnalyzer squatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, repetitionDetector);
+
+            return squatSequenceAnalyzer.analyze(timestampedPoseResults);
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        analysisExecutor.shutdownNow();
+        super.onDestroy();
     }
 }
