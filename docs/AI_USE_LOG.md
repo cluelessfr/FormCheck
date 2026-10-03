@@ -44,3 +44,6 @@ Now I added a few things. First I added a function that can sample frames at dif
 
 ## 09/23/2026
 I added a function to detect the first squat repetition, with detector thresholds and added instrumented tests. Codex implemented the method to detect the first repetition given a list of TimestampedKneeAngles. The detector now recognizes standing, bottom, and returning to standing angles and returns empty for incomplete sequences. All 51 JVM tests passed. The thresholds used for the standing and bottom angles were for testing and not universal standards.
+
+## 10/02/2026
+I connected the analysis to the UI, so now you can analyze a video and the app will tell you if a squat repetition was detected or if the analysis failed. The app also tells yoy the approximate timings of when you started standing, squatted down, and when you got back up. These are only approximate because the detector currently only samples in intervals of one second. I added tests for this and they all passed. 

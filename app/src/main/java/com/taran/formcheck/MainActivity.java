@@ -19,6 +19,7 @@ import com.taran.formcheck.analysis.LandmarkQualityGate;
 import com.taran.formcheck.pose.PoseLandmarkerManager;
 import com.taran.formcheck.pose.SquatAnalysisOutcome;
 import com.taran.formcheck.pose.SquatAnalysisResult;
+import com.taran.formcheck.pose.SquatRepetition;
 import com.taran.formcheck.pose.SquatRepetitionDetector;
 import com.taran.formcheck.pose.TimestampedPoseResult;
 import com.taran.formcheck.pose.VideoKneeAngleSequenceAnalyzer;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         TextView selectionStatusText = findViewById(R.id.selectionStatusText);
         Button analyzeVideoButton = findViewById(R.id.analyzeVideoButton);
         TextView analysisResultText = findViewById(R.id.analysisResultText);
+        TextView repetitionDetailsText = findViewById(R.id.repetitionDetailsText);
 
         ActivityResultLauncher<String[]> videoPickerLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), inputUri -> {
             if (inputUri != null) {
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 selectionStatusText.setText(R.string.video_selected);
                 analyzeVideoButton.setEnabled(true);
                 analysisResultText.setText(R.string.analysis_not_started);
+                repetitionDetailsText.setText("");
             }
         });
 
@@ -81,17 +84,26 @@ public class MainActivity extends AppCompatActivity {
             analyzeVideoButton.setEnabled(false);
             selectVideoButton.setEnabled(false);
             analysisResultText.setText(R.string.analysis_in_progress);
+            repetitionDetailsText.setText("");
 
             analysisExecutor.submit(() -> {
                 try {
                     SquatAnalysisResult result = analyzeVideo(videoUri);
 
                     int analysisResult;
+                    String repetitionDetails;
+
                     if (result.getOutcome() == SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED) {
                         analysisResult = R.string.complete_repetition_detected;
+                        SquatRepetition repetition = result.getRepetition();
+                        double standingStartSeconds = (double) repetition.getStandingStartTimestamp() / 1000;
+                        double lowestAngleSeconds = (double) repetition.getLowestAngleTimestamp() / 1000;
+                        double returnToStandingSeconds = (double) repetition.getReturnToStandingTimestamp() / 1000;
+                        repetitionDetails = getString(R.string.repetition_timing, standingStartSeconds, lowestAngleSeconds, returnToStandingSeconds);
                     }
                     else {
                         analysisResult = R.string.insufficient_evidence;
+                        repetitionDetails = "";
                     }
 
                     runOnUiThread(() -> {
@@ -100,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         analysisResultText.setText(analysisResult);
+                        repetitionDetailsText.setText(repetitionDetails);
                         selectVideoButton.setEnabled(true);
                         analyzeVideoButton.setEnabled(true);
                     });
