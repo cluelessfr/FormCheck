@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutorService;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final long FRAME_INTERVAL_MILLISECONDS = 1000;
+    private static final long FRAME_INTERVAL_MILLISECONDS = 250;
 
     private static final double MINIMUM_LANDMARK_VISIBILITY = 0.5;
 
@@ -88,7 +88,15 @@ public class MainActivity extends AppCompatActivity {
 
             analysisExecutor.submit(() -> {
                 try {
+                    long startTime = System.nanoTime();
+
                     SquatAnalysisResult result = analyzeVideo(videoUri);
+
+                    long endTime = System.nanoTime();
+
+                    double timeElapsed = (double) (endTime - startTime) / 1000000000;
+
+                    Log.d(TAG, "Time Elapsed: " + timeElapsed + " seconds");
 
                     int analysisResult;
                     String repetitionDetails;

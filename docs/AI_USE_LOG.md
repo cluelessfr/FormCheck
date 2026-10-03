@@ -47,3 +47,6 @@ I added a function to detect the first squat repetition, with detector threshold
 
 ## 10/02/2026
 I connected the analysis to the UI, so now you can analyze a video and the app will tell you if a squat repetition was detected or if the analysis failed. The app also tells yoy the approximate timings of when you started standing, squatted down, and when you got back up. These are only approximate because the detector currently only samples in intervals of one second. I added tests for this and they all passed. 
+
+## 10/03/2026
+I updated the sampling interval from 1000 Ms to 250 Ms. This showed to produces finer time stamps while not increasing the processing time by too much. 

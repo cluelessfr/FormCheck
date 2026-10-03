@@ -11,5 +11,5 @@
     <string name="complete_repetition_detected">Complete squat repetition detected.</string>
     <string name="insufficient_evidence">Not enough evidence to detect a complete squat repetition.</string>
     <string name="analysis_failed">Analysis could not be completed for this video.</string>
-    <string name="repetition_timing">Sampled video times - Standing: %1$.1f s; Lowest knee angle: %2$.1f s; Return to Standing: %3$.1f s</string>
+    <string name="repetition_timing">Sampled video times - Standing: %1$.2f s; Lowest knee angle: %2$.2f s; Return to Standing: %3$.2f s</string>
 </resources>
