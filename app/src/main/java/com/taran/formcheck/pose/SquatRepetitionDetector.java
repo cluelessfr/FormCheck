@@ -6,8 +6,16 @@ import java.util.Optional;
 public final class SquatRepetitionDetector {
     private final double standingAngleThreshold;
     private final double bottomAngleThreshold;
+    private final long maximumGapMilliseconds;
+
+    private static final long DEFAULT_MAXIMUM_GAP_MILLISECONDS = 1000;
+
 
     public SquatRepetitionDetector(double standingAngleThreshold, double bottomAngleThreshold) {
+        this(standingAngleThreshold, bottomAngleThreshold, DEFAULT_MAXIMUM_GAP_MILLISECONDS);
+    }
+
+    public SquatRepetitionDetector(double standingAngleThreshold, double bottomAngleThreshold, long maximumGapMilliseconds) {
         if (!Double.isFinite(standingAngleThreshold) || !Double.isFinite(bottomAngleThreshold)) {
             throw new IllegalArgumentException("Both angle parameters must be finite");
         }
@@ -19,6 +27,12 @@ public final class SquatRepetitionDetector {
         if (!(bottomAngleThreshold < standingAngleThreshold)) {
             throw new IllegalArgumentException("Bottom angle threshold must be less than the standing angle threshold");
         }
+
+        if (maximumGapMilliseconds <= 0) {
+            throw new IllegalArgumentException("The maximum gap must be greater than 0");
+        }
+
+        this.maximumGapMilliseconds = maximumGapMilliseconds;
 
         this.standingAngleThreshold = standingAngleThreshold;
         this.bottomAngleThreshold = bottomAngleThreshold;
@@ -34,6 +48,7 @@ public final class SquatRepetitionDetector {
         }
 
         Long standingStartTimestamp = null;
+        Long previousTimestampMilliseconds = null;
         double smallestAngle = Double.POSITIVE_INFINITY;
         long smallestAngleTimestamp = -1;
         boolean reachedBottom = false;
@@ -41,6 +56,15 @@ public final class SquatRepetitionDetector {
         for (TimestampedKneeAngle angle : angles) {
             double angleDegrees = angle.getAngleDegrees();
             long timestampMilliseconds = angle.getTimestampMilliseconds();
+
+            if (previousTimestampMilliseconds != null && timestampMilliseconds - previousTimestampMilliseconds > maximumGapMilliseconds) {
+                standingStartTimestamp = null;
+                smallestAngle = Double.POSITIVE_INFINITY;
+                smallestAngleTimestamp = -1;
+                reachedBottom = false;
+            }
+
+            previousTimestampMilliseconds = timestampMilliseconds;
 
             if (standingStartTimestamp == null) {
                 if (angleDegrees >= standingAngleThreshold) {

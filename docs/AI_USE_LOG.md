@@ -52,4 +52,7 @@ I connected the analysis to the UI, so now you can analyze a video and the app w
 I updated the sampling interval from 1000 Ms to 250 Ms. This showed to produces finer time stamps while not increasing the processing time by too much. 
 
 ## 10/05/2026
-During the frame processing I added a new message that says how many of the total frames have been processed. I tested it with a real video and it showed in real time how many frames have been processed. 
+During the frame processing I added a new message that says how many of the total frames have been processed. I tested it with a real video, and it showed in real time how many frames have been processed. 
+
+## 10/06/2026
+When the gap between observations is larger than the configured gap, the detection resets. The current experimental threshold is 1000 ms, meaning if the gap between usable observations is greater than 1 second the detection resets to the default state. This gap is configurable. All tests passed.

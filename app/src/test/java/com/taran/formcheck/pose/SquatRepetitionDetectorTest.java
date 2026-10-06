@@ -146,4 +146,69 @@ public class SquatRepetitionDetectorTest {
         Assert.assertEquals(SquatAnalysisOutcome.INSUFFICIENT_EVIDENCE, result.getOutcome());
         Assert.assertNull(result.getRepetition());
     }
+
+    @Test
+    public void testDoesNotDetectAcrossLongGap() {
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
+        List<TimestampedKneeAngle> angles = new ArrayList<>();
+
+        TimestampedKneeAngle standingStart = new TimestampedKneeAngle(0, BodySide.LEFT, 170);
+        TimestampedKneeAngle bottom = new TimestampedKneeAngle(10000, BodySide.LEFT, 110);
+        TimestampedKneeAngle returnToStanding = new TimestampedKneeAngle(10250, BodySide.LEFT, 170);
+
+        angles.add(standingStart);
+        angles.add(bottom);
+        angles.add(returnToStanding);
+
+        Assert.assertEquals(Optional.empty(), detector.detect(angles));
+    }
+
+    @Test
+    public void testDetectsNewRepetitionAfterLongGap() {
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
+        List<TimestampedKneeAngle> angles = new ArrayList<>();
+
+        TimestampedKneeAngle standingStart = new TimestampedKneeAngle(0, BodySide.LEFT, 170);
+        TimestampedKneeAngle bottom = new TimestampedKneeAngle(250, BodySide.LEFT, 110);
+        TimestampedKneeAngle standingStartFar = new TimestampedKneeAngle(10000, BodySide.LEFT, 170);
+        TimestampedKneeAngle bottomFar = new TimestampedKneeAngle(10250, BodySide.LEFT, 110);
+        TimestampedKneeAngle returnToStandingFar = new TimestampedKneeAngle(10500, BodySide.LEFT, 170);
+
+        angles.add(standingStart);
+        angles.add(bottom);
+        angles.add(standingStartFar);
+        angles.add(bottomFar);
+        angles.add(returnToStandingFar);
+
+        Optional<SquatRepetition> repetition = detector.detect(angles);
+
+        Assert.assertTrue(repetition.isPresent());
+        Assert.assertEquals(10000, repetition.get().getStandingStartTimestamp());
+        Assert.assertEquals(10250, repetition.get().getLowestAngleTimestamp());
+        Assert.assertEquals(10500, repetition.get().getReturnToStandingTimestamp());
+    }
+
+    @Test
+    public void testCustomGapLimitBoundary() {
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120, 500);
+        SquatRepetitionDetector shortDetector = new SquatRepetitionDetector(160, 120, 499);
+        List<TimestampedKneeAngle> angles = new ArrayList<>();
+
+        TimestampedKneeAngle standingStart = new TimestampedKneeAngle(0, BodySide.LEFT, 170);
+        TimestampedKneeAngle bottom = new TimestampedKneeAngle(500, BodySide.LEFT, 110);
+        TimestampedKneeAngle returnToStanding = new TimestampedKneeAngle(1000, BodySide.LEFT, 170);
+
+        angles.add(standingStart);
+        angles.add(bottom);
+        angles.add(returnToStanding);
+
+        Assert.assertTrue(detector.detect(angles).isPresent());
+        Assert.assertFalse(shortDetector.detect(angles).isPresent());
+    }
+
+    @Test
+    public void testRejectNonPositiveMaximumGap() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> new SquatRepetitionDetector(160, 120, -1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> new SquatRepetitionDetector(160, 120, 0));
+    }
 }
