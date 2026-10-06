@@ -50,3 +50,6 @@ I connected the analysis to the UI, so now you can analyze a video and the app w
 
 ## 10/03/2026
 I updated the sampling interval from 1000 Ms to 250 Ms. This showed to produces finer time stamps while not increasing the processing time by too much. 
+
+## 10/05/2026
+During the frame processing I added a new message that says how many of the total frames have been processed. I tested it with a real video and it showed in real time how many frames have been processed. 

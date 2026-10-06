@@ -22,6 +22,7 @@ import com.taran.formcheck.pose.SquatAnalysisResult;
 import com.taran.formcheck.pose.SquatRepetition;
 import com.taran.formcheck.pose.SquatRepetitionDetector;
 import com.taran.formcheck.pose.TimestampedPoseResult;
+import com.taran.formcheck.pose.VideoAnalysisProgressListener;
 import com.taran.formcheck.pose.VideoKneeAngleSequenceAnalyzer;
 import com.taran.formcheck.pose.VideoPoseSequenceProcessor;
 import com.taran.formcheck.pose.VideoSquatSequenceAnalyzer;
@@ -90,7 +91,13 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     long startTime = System.nanoTime();
 
-                    SquatAnalysisResult result = analyzeVideo(videoUri);
+                    SquatAnalysisResult result = analyzeVideo(videoUri, ((int processedFrames, int totalFrames) -> runOnUiThread(() -> {
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+
+                        analysisResultText.setText(getString(R.string.analysis_frame_progress, processedFrames, totalFrames));
+                    })));
 
                     long endTime = System.nanoTime();
 
@@ -148,10 +155,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private SquatAnalysisResult analyzeVideo(Uri videoUri) throws IOException {
+    private SquatAnalysisResult analyzeVideo(Uri videoUri, VideoAnalysisProgressListener progressListener) throws IOException {
         try (VideoFrameDecoder decoder = new VideoFrameDecoder(getApplicationContext(), videoUri);
              PoseLandmarkerManager manager = new PoseLandmarkerManager(getApplicationContext())) {
-            List<TimestampedPoseResult> timestampedPoseResults = VideoPoseSequenceProcessor.processVideoPoseSequence(decoder, manager, FRAME_INTERVAL_MILLISECONDS);
+            List<TimestampedPoseResult> timestampedPoseResults = VideoPoseSequenceProcessor.processVideoPoseSequence(decoder, manager, FRAME_INTERVAL_MILLISECONDS, progressListener);
 
             LandmarkQualityGate gate = new LandmarkQualityGate(MINIMUM_LANDMARK_VISIBILITY, MINIMUM_LANDMARK_PRESENCE);
             VideoKneeAngleSequenceAnalyzer analyzer = new VideoKneeAngleSequenceAnalyzer(gate);

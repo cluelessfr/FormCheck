@@ -9,6 +9,10 @@ import java.util.List;
 
 public class VideoPoseSequenceProcessor {
     public static List<TimestampedPoseResult> processVideoPoseSequence(VideoFrameDecoder decoder, PoseLandmarkerManager manager, long intervalMilliseconds) {
+        return processVideoPoseSequence(decoder, manager, intervalMilliseconds, null);
+    }
+
+    public static List<TimestampedPoseResult> processVideoPoseSequence(VideoFrameDecoder decoder, PoseLandmarkerManager manager, long intervalMilliseconds, VideoAnalysisProgressListener progressListener) {
         if (decoder == null) {
             throw new IllegalArgumentException("VideoFrameDecoder cannot be null");
         }
@@ -25,6 +29,10 @@ public class VideoPoseSequenceProcessor {
             PoseLandmarkerResult result = VideoFramePoseProcessor.processPoseFrame(decoder, manager, timestamp);
             TimestampedPoseResult timestampedPoseResult = new TimestampedPoseResult(timestamp, result);
             results.add(timestampedPoseResult);
+
+            if (progressListener != null) {
+                progressListener.onProgress(results.size(), timestamps.size());
+            }
         }
 
         return results;
