@@ -56,3 +56,6 @@ During the frame processing I added a new message that says how many of the tota
 
 ## 10/06/2026
 When the gap between observations is larger than the configured gap, the detection resets. The current experimental threshold is 1000 ms, meaning if the gap between usable observations is greater than 1 second the detection resets to the default state. This gap is configurable. All tests passed.
+
+## 10/07/2026
+I tested all the states of the app, which were a successful detection, insufficient evidence, failed analysis, and recovery from another state to the current state. Codex created the invalid video used fo the failure test. 
