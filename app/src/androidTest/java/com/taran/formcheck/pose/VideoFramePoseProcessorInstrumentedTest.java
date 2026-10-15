@@ -42,8 +42,12 @@ public class VideoFramePoseProcessorInstrumentedTest {
 
         try (VideoFrameDecoder decoder = new VideoFrameDecoder(appContext, uri);
              PoseLandmarkerManager manager = new PoseLandmarkerManager(appContext)) {
-            PoseLandmarkerResult result = VideoFramePoseProcessor.processPoseFrame(decoder, manager, 1000);
+            TimestampedPoseResult result = VideoFramePoseProcessor.processPoseFrame(decoder, manager, 1000);
             Assert.assertNotNull(result);
+            Assert.assertNotNull(result.getResult());
+            Assert.assertEquals(1000, result.getTimestampMilliseconds());
+            Assert.assertTrue(result.getWidth() > 0);
+            Assert.assertTrue(result.getHeight() > 0);
         }
 
         finally {

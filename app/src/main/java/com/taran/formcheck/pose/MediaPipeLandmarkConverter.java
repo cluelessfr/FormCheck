@@ -8,12 +8,20 @@ public final class MediaPipeLandmarkConverter {
     private MediaPipeLandmarkConverter() {
     }
 
-    public static LandmarkObservation convert(NormalizedLandmark landmark) {
+    public static LandmarkObservation convert(NormalizedLandmark landmark, int width, int height) {
         if (landmark == null) {
             throw new IllegalArgumentException("Landmark cannot be null");
         }
 
-        Point2D point = new Point2D(landmark.x(), landmark.y());
+        if (width <= 0) {
+            throw new IllegalArgumentException("Width must be positive");
+        }
+
+        if (height <= 0) {
+            throw new IllegalArgumentException("Height must be positive");
+        }
+
+        Point2D point = new Point2D(landmark.x() * width, landmark.y() * height);
 
         double visibility;
         double presence;

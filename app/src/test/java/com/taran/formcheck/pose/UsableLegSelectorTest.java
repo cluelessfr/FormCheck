@@ -25,7 +25,7 @@ public class UsableLegSelectorTest {
         LandmarkQualityGate gate = new LandmarkQualityGate(0.5, 0.5);
         UsableLegSelector selector = new UsableLegSelector(gate);
 
-        Assert.assertThrows(IllegalArgumentException.class, () -> selector.select(null));
+        Assert.assertThrows(IllegalArgumentException.class, () -> selector.select(null, 100, 100));
     }
 
     @Test
@@ -34,7 +34,7 @@ public class UsableLegSelectorTest {
         UsableLegSelector selector = new UsableLegSelector(gate);
         PoseLandmarkerResult result = createEmptyPoseResult();
 
-        Optional<LegLandmarkObservations> selectedLeg = selector.select(result);
+        Optional<LegLandmarkObservations> selectedLeg = selector.select(result, 100, 100);
 
         Assert.assertFalse(selectedLeg.isPresent());
     }
@@ -45,7 +45,7 @@ public class UsableLegSelectorTest {
         UsableLegSelector selector = new UsableLegSelector(gate);
         PoseLandmarkerResult result = createPoseResult(0.4f, 0.3f);
 
-        Optional<LegLandmarkObservations> selectedLeg = selector.select(result);
+        Optional<LegLandmarkObservations> selectedLeg = selector.select(result, 100, 100);
 
         Assert.assertFalse(selectedLeg.isPresent());
     }
@@ -56,7 +56,7 @@ public class UsableLegSelectorTest {
         UsableLegSelector selector = new UsableLegSelector(gate);
         PoseLandmarkerResult result = createPoseResult(0.4f, 0.8f);
 
-        Optional<LegLandmarkObservations> selectedLeg = selector.select(result);
+        Optional<LegLandmarkObservations> selectedLeg = selector.select(result, 100, 100);
 
         Assert.assertTrue(selectedLeg.isPresent());
         Assert.assertEquals(BodySide.RIGHT, selectedLeg.get().getSide());
@@ -68,7 +68,7 @@ public class UsableLegSelectorTest {
         UsableLegSelector selector = new UsableLegSelector(gate);
         PoseLandmarkerResult result = createPoseResult(0.7f, 0.9f);
 
-        Optional<LegLandmarkObservations> selectedLeg = selector.select(result);
+        Optional<LegLandmarkObservations> selectedLeg = selector.select(result, 100, 100);
 
         Assert.assertTrue(selectedLeg.isPresent());
         Assert.assertEquals(BodySide.RIGHT, selectedLeg.get().getSide());
@@ -80,7 +80,7 @@ public class UsableLegSelectorTest {
         UsableLegSelector selector = new UsableLegSelector(gate);
         PoseLandmarkerResult result = createPoseResult(0.8f, 0.8f);
 
-        Optional<LegLandmarkObservations> selectedLeg = selector.select(result);
+        Optional<LegLandmarkObservations> selectedLeg = selector.select(result, 100, 100);
 
         Assert.assertTrue(selectedLeg.isPresent());
         Assert.assertEquals(BodySide.LEFT, selectedLeg.get().getSide());

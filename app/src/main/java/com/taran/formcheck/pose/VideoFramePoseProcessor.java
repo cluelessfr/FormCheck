@@ -7,7 +7,7 @@ import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult;
 import com.taran.formcheck.video.VideoFrameDecoder;
 
 public class VideoFramePoseProcessor {
-    public static PoseLandmarkerResult processPoseFrame(VideoFrameDecoder decoder, PoseLandmarkerManager manager, long timestampMilliseconds) {
+    public static TimestampedPoseResult processPoseFrame(VideoFrameDecoder decoder, PoseLandmarkerManager manager, long timestampMilliseconds) {
         if (decoder == null) {
             throw new IllegalArgumentException("VideoFrameDecoder cannot be null");
         }
@@ -21,7 +21,9 @@ public class VideoFramePoseProcessor {
         try {
             PoseLandmarkerResult result = manager.processDecodedFrame(image, timestampMilliseconds);
 
-            return result;
+            TimestampedPoseResult timestampedPoseResult = new TimestampedPoseResult(timestampMilliseconds, result, bitmap.getWidth(), bitmap.getHeight());
+
+            return timestampedPoseResult;
         }
 
         finally {

@@ -211,4 +211,77 @@ public class SquatRepetitionDetectorTest {
         Assert.assertThrows(IllegalArgumentException.class, () -> new SquatRepetitionDetector(160, 120, -1));
         Assert.assertThrows(IllegalArgumentException.class, () -> new SquatRepetitionDetector(160, 120, 0));
     }
+
+    @Test
+    public void rejectMixedLegs() {
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120, 500);
+        List<TimestampedKneeAngle> angles = new ArrayList<>();
+
+        TimestampedKneeAngle standingStart = new TimestampedKneeAngle(0, BodySide.LEFT, 170);
+        TimestampedKneeAngle bottom = new TimestampedKneeAngle(250, BodySide.LEFT, 110);
+        TimestampedKneeAngle returnToStanding = new TimestampedKneeAngle(500, BodySide.RIGHT, 170);
+
+        angles.add(standingStart);
+        angles.add(bottom);
+        angles.add(returnToStanding);
+
+        Assert.assertFalse(detector.detect(angles).isPresent());
+    }
+
+    @Test
+    public void recoverAfterSwitching() {
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120, 500);
+        List<TimestampedKneeAngle> angles = new ArrayList<>();
+
+        TimestampedKneeAngle standingStart = new TimestampedKneeAngle(0, BodySide.LEFT, 170);
+        TimestampedKneeAngle bottom = new TimestampedKneeAngle(250, BodySide.LEFT, 110);
+        TimestampedKneeAngle returnToStanding = new TimestampedKneeAngle(500, BodySide.RIGHT, 170);
+        TimestampedKneeAngle rightBottom = new TimestampedKneeAngle(750, BodySide.RIGHT, 110);
+        TimestampedKneeAngle rightStanding = new TimestampedKneeAngle(1000, BodySide.RIGHT, 170);
+
+        angles.add(standingStart);
+        angles.add(bottom);
+        angles.add(returnToStanding);
+        angles.add(rightBottom);
+        angles.add(rightStanding);
+
+        Optional<SquatRepetition> detectedAngles = detector.detect(angles);
+
+        Assert.assertTrue(detectedAngles.isPresent());
+        Assert.assertEquals(500, detectedAngles.get().getStandingStartTimestamp());
+        Assert.assertEquals(750, detectedAngles.get().getLowestAngleTimestamp());
+        Assert.assertEquals(1000, detectedAngles.get().getReturnToStandingTimestamp());
+    }
+
+    @Test
+    public void testRejectDuplicateTimestamps() {
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120, 500);
+        List<TimestampedKneeAngle> angles = new ArrayList<>();
+
+        TimestampedKneeAngle standingStart = new TimestampedKneeAngle(0, BodySide.LEFT, 170);
+        TimestampedKneeAngle bottom = new TimestampedKneeAngle(0, BodySide.LEFT, 110);
+        TimestampedKneeAngle returnToStanding = new TimestampedKneeAngle(250, BodySide.LEFT, 170);
+
+        angles.add(standingStart);
+        angles.add(bottom);
+        angles.add(returnToStanding);
+
+        Assert.assertThrows(IllegalArgumentException.class, () -> detector.detect(angles));
+    }
+
+    @Test
+    public void testRejectDecreasingTimestamps() {
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120, 500);
+        List<TimestampedKneeAngle> angles = new ArrayList<>();
+
+        TimestampedKneeAngle standingStart = new TimestampedKneeAngle(0, BodySide.LEFT, 170);
+        TimestampedKneeAngle bottom = new TimestampedKneeAngle(250, BodySide.LEFT, 110);
+        TimestampedKneeAngle returnToStanding = new TimestampedKneeAngle(200, BodySide.LEFT, 170);
+
+        angles.add(standingStart);
+        angles.add(bottom);
+        angles.add(returnToStanding);
+
+        Assert.assertThrows(IllegalArgumentException.class, () -> detector.detect(angles));
+    }
 }

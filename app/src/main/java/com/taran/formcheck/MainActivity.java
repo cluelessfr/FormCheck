@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.util.Log;
 
 import com.taran.formcheck.analysis.LandmarkQualityGate;
+import com.taran.formcheck.pose.LoweringTimingAnalyzer;
 import com.taran.formcheck.pose.PoseLandmarkerManager;
 import com.taran.formcheck.pose.SquatAnalysisOutcome;
 import com.taran.formcheck.pose.SquatAnalysisResult;
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
             LandmarkQualityGate gate = new LandmarkQualityGate(MINIMUM_LANDMARK_VISIBILITY, MINIMUM_LANDMARK_PRESENCE);
             VideoKneeAngleSequenceAnalyzer analyzer = new VideoKneeAngleSequenceAnalyzer(gate);
             SquatRepetitionDetector repetitionDetector = new SquatRepetitionDetector(STANDING_ANGLE_THRESHOLD, BOTTOM_ANGLE_THRESHOLD);
-            VideoSquatSequenceAnalyzer squatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, repetitionDetector);
+            VideoSquatSequenceAnalyzer squatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, repetitionDetector, new LoweringTimingAnalyzer(5, 3, 500));
 
             return squatSequenceAnalyzer.analyze(timestampedPoseResults);
         }

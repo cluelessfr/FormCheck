@@ -110,9 +110,9 @@ public class VideoKneeAngleSequenceAnalyzerTest {
         PoseLandmarkerResult invalidResult = createEmptyPoseResult();
         PoseLandmarkerResult validResult2 = createPoseResult();
 
-        TimestampedPoseResult timestampedValidResult1 = new TimestampedPoseResult(0, validResult1);
-        TimestampedPoseResult timestampedInvalidPoseResult = new TimestampedPoseResult(1000, invalidResult);
-        TimestampedPoseResult timestampedValidPoseResult2 = new TimestampedPoseResult(2000, validResult2);
+        TimestampedPoseResult timestampedValidResult1 = new TimestampedPoseResult(0, validResult1, 100, 100);
+        TimestampedPoseResult timestampedInvalidPoseResult = new TimestampedPoseResult(1000, invalidResult, 100, 100);
+        TimestampedPoseResult timestampedValidPoseResult2 = new TimestampedPoseResult(2000, validResult2, 100, 100);
 
         List<TimestampedPoseResult> results = new ArrayList<>();
         results.add(timestampedValidResult1);

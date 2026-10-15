@@ -11,13 +11,21 @@ public final class LegLandmarkExtractor {
     private LegLandmarkExtractor() {
     }
 
-    public static Optional<LegLandmarkObservations> extractForSide(PoseLandmarkerResult result, BodySide side) {
+    public static Optional<LegLandmarkObservations> extractForSide(PoseLandmarkerResult result, BodySide side, int width, int height) {
         if (result == null) {
             throw new IllegalArgumentException("PoseLandmarkerResult cannot be null");
         }
 
         if (side == null) {
             throw new IllegalArgumentException("BodySide cannot be null");
+        }
+
+        if (width <= 0) {
+            throw new IllegalArgumentException("Width must be positive");
+        }
+
+        if (height <= 0) {
+            throw new IllegalArgumentException("Height must be positive");
         }
 
         if (result.landmarks().isEmpty()) {
@@ -49,9 +57,9 @@ public final class LegLandmarkExtractor {
         NormalizedLandmark normalizedKnee = poseLandmarks.get(kneeIndex);
         NormalizedLandmark normalizedAnkle = poseLandmarks.get(ankleIndex);
 
-        LandmarkObservation hip = MediaPipeLandmarkConverter.convert(normalizedHip);
-        LandmarkObservation knee = MediaPipeLandmarkConverter.convert(normalizedKnee);
-        LandmarkObservation ankle = MediaPipeLandmarkConverter.convert(normalizedAnkle);
+        LandmarkObservation hip = MediaPipeLandmarkConverter.convert(normalizedHip, width, height);
+        LandmarkObservation knee = MediaPipeLandmarkConverter.convert(normalizedKnee, width, height);
+        LandmarkObservation ankle = MediaPipeLandmarkConverter.convert(normalizedAnkle, width, height);
 
         LegLandmarkObservations observations = new LegLandmarkObservations(side, hip, knee, ankle);
 

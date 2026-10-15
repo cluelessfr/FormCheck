@@ -24,7 +24,7 @@ public class PoseKneeAngleAnalyzer {
             throw new IllegalArgumentException("TimestampedPoseResult cannot be null");
         }
 
-        Optional<LegLandmarkObservations> observations = usableLegSelector.select(timestampedPose.getResult());
+        Optional<LegLandmarkObservations> observations = usableLegSelector.select(timestampedPose.getResult(), timestampedPose.getWidth(), timestampedPose.getHeight());
 
         if (observations.isEmpty()) {
             return Optional.empty();

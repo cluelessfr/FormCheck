@@ -49,6 +49,7 @@ public final class SquatRepetitionDetector {
 
         Long standingStartTimestamp = null;
         Long previousTimestampMilliseconds = null;
+        BodySide previousSide = null;
         double smallestAngle = Double.POSITIVE_INFINITY;
         long smallestAngleTimestamp = -1;
         boolean reachedBottom = false;
@@ -57,6 +58,10 @@ public final class SquatRepetitionDetector {
             double angleDegrees = angle.getAngleDegrees();
             long timestampMilliseconds = angle.getTimestampMilliseconds();
 
+            if (previousTimestampMilliseconds != null && timestampMilliseconds <= previousTimestampMilliseconds) {
+                throw new IllegalArgumentException("Current timestamp must be greater than previous timestamp");
+            }
+
             if (previousTimestampMilliseconds != null && timestampMilliseconds - previousTimestampMilliseconds > maximumGapMilliseconds) {
                 standingStartTimestamp = null;
                 smallestAngle = Double.POSITIVE_INFINITY;
@@ -64,7 +69,15 @@ public final class SquatRepetitionDetector {
                 reachedBottom = false;
             }
 
+            if (previousSide != null && previousSide != angle.getSide()) {
+                standingStartTimestamp = null;
+                smallestAngle = Double.POSITIVE_INFINITY;
+                smallestAngleTimestamp = -1;
+                reachedBottom = false;
+            }
+
             previousTimestampMilliseconds = timestampMilliseconds;
+            previousSide = angle.getSide();
 
             if (standingStartTimestamp == null) {
                 if (angleDegrees >= standingAngleThreshold) {

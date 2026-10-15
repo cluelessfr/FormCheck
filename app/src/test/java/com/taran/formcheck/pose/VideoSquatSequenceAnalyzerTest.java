@@ -23,8 +23,8 @@ public class VideoSquatSequenceAnalyzerTest {
 
         SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
 
-        Assert.assertThrows(IllegalArgumentException.class, () -> new VideoSquatSequenceAnalyzer(null, detector));
-        Assert.assertThrows(IllegalArgumentException.class, () -> new VideoSquatSequenceAnalyzer(analyzer, null));
+        Assert.assertThrows(IllegalArgumentException.class, () -> new VideoSquatSequenceAnalyzer(null, detector, new LoweringTimingAnalyzer(5, 3, 500)));
+        Assert.assertThrows(IllegalArgumentException.class, () -> new VideoSquatSequenceAnalyzer(analyzer, null, new LoweringTimingAnalyzer(5, 3, 500)));
     }
 
     @Test
@@ -32,7 +32,7 @@ public class VideoSquatSequenceAnalyzerTest {
         LandmarkQualityGate gate = new LandmarkQualityGate(0.5, 0.5);
         VideoKneeAngleSequenceAnalyzer analyzer = new VideoKneeAngleSequenceAnalyzer(gate);
         SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
-        VideoSquatSequenceAnalyzer videoSquatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, detector);
+        VideoSquatSequenceAnalyzer videoSquatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, detector, new LoweringTimingAnalyzer(5, 3, 500));
         SquatAnalysisResult result = videoSquatSequenceAnalyzer.analyze(new ArrayList<>());
 
         Assert.assertEquals(SquatAnalysisOutcome.INSUFFICIENT_EVIDENCE, result.getOutcome());
@@ -91,14 +91,14 @@ public class VideoSquatSequenceAnalyzerTest {
         LandmarkQualityGate gate = new LandmarkQualityGate(0.5, 0.5);
         VideoKneeAngleSequenceAnalyzer analyzer = new VideoKneeAngleSequenceAnalyzer(gate);
         SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
-        VideoSquatSequenceAnalyzer videoSquatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, detector);
+        VideoSquatSequenceAnalyzer videoSquatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, detector, new LoweringTimingAnalyzer(5, 3, 500));
         ArrayList<TimestampedPoseResult> timestampedPoseResults = new ArrayList<>();
 
-        timestampedPoseResults.add(new TimestampedPoseResult(0, createPoseResult(170)));
-        timestampedPoseResults.add(new TimestampedPoseResult(1000, createPoseResult(145)));
-        timestampedPoseResults.add(new TimestampedPoseResult(2000, createPoseResult(110)));
-        timestampedPoseResults.add(new TimestampedPoseResult(3000, createPoseResult(140)));
-        timestampedPoseResults.add(new TimestampedPoseResult(4000, createPoseResult(170)));
+        timestampedPoseResults.add(new TimestampedPoseResult(0, createPoseResult(170), 100, 100));
+        timestampedPoseResults.add(new TimestampedPoseResult(1000, createPoseResult(145), 100, 100));
+        timestampedPoseResults.add(new TimestampedPoseResult(2000, createPoseResult(110), 100, 100));
+        timestampedPoseResults.add(new TimestampedPoseResult(3000, createPoseResult(140), 100, 100));
+        timestampedPoseResults.add(new TimestampedPoseResult(4000, createPoseResult(170), 100, 100));
 
         SquatAnalysisResult result = videoSquatSequenceAnalyzer.analyze(timestampedPoseResults);
 
@@ -114,7 +114,7 @@ public class VideoSquatSequenceAnalyzerTest {
         LandmarkQualityGate gate = new LandmarkQualityGate(0.5, 0.5);
         VideoKneeAngleSequenceAnalyzer analyzer = new VideoKneeAngleSequenceAnalyzer(gate);
         SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
-        VideoSquatSequenceAnalyzer videoSquatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, detector);
+        VideoSquatSequenceAnalyzer videoSquatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, detector, new LoweringTimingAnalyzer(5, 3, 500));
 
         Assert.assertThrows(IllegalArgumentException.class, () -> videoSquatSequenceAnalyzer.analyze(null));
     }

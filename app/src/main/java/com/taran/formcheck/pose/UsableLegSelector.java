@@ -34,13 +34,21 @@ public class UsableLegSelector {
         return minimumValue;
     }
 
-    public Optional<LegLandmarkObservations> select(PoseLandmarkerResult result) {
+    public Optional<LegLandmarkObservations> select(PoseLandmarkerResult result, int width, int height) {
         if (result == null) {
             throw new IllegalArgumentException("Result cannot be null");
         }
 
-        Optional<LegLandmarkObservations> leftLeg = LegLandmarkExtractor.extractForSide(result, BodySide.LEFT);
-        Optional<LegLandmarkObservations> rightLeg = LegLandmarkExtractor.extractForSide(result, BodySide.RIGHT);
+        if (width <= 0) {
+            throw new IllegalArgumentException("Width must be positive");
+        }
+
+        if (height <= 0) {
+            throw new IllegalArgumentException("Height must be positive");
+        }
+
+        Optional<LegLandmarkObservations> leftLeg = LegLandmarkExtractor.extractForSide(result, BodySide.LEFT, width, height);
+        Optional<LegLandmarkObservations> rightLeg = LegLandmarkExtractor.extractForSide(result, BodySide.RIGHT, width, height);
 
         boolean leftLegIsUsable = leftLeg.isPresent() && isUsable(leftLeg.get());
         boolean rightLegIsUsable = rightLeg.isPresent() && isUsable(rightLeg.get());
