@@ -106,6 +106,13 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.d(TAG, "Time Elapsed: " + timeElapsed + " seconds");
 
+                    if (result.getLoweringTiming().isPresent()) {
+                        Log.d(TAG, "Estimated Start: " + result.getLoweringTiming().get().getLoweringStart() + " ms; Bottom Reached: " + result.getLoweringTiming().get().getBottomReached() + " ms; Duration: " + result.getLoweringTiming().get().getDurationMilliseconds() + " ms");
+                    }
+                    else {
+                        Log.d(TAG, "Lowering timing unavailable");
+                    }
+
                     int analysisResult;
                     String repetitionDetails;
 
