@@ -107,6 +107,7 @@ public class VideoSquatSequenceAnalyzerTest {
         Assert.assertEquals(0, result.getRepetition().getStandingStartTimestamp());
         Assert.assertEquals(2000, result.getRepetition().getLowestAngleTimestamp());
         Assert.assertEquals(4000, result.getRepetition().getReturnToStandingTimestamp());
+        Assert.assertTrue(result.getLoweringTiming().isEmpty());
     }
 
     @Test
@@ -117,5 +118,47 @@ public class VideoSquatSequenceAnalyzerTest {
         VideoSquatSequenceAnalyzer videoSquatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, detector, new LoweringTimingAnalyzer(5, 3, 500));
 
         Assert.assertThrows(IllegalArgumentException.class, () -> videoSquatSequenceAnalyzer.analyze(null));
+    }
+
+    @Test
+    public void testIntegration() {
+        LandmarkQualityGate gate = new LandmarkQualityGate(0.5, 0.5);
+        VideoKneeAngleSequenceAnalyzer analyzer = new VideoKneeAngleSequenceAnalyzer(gate);
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
+        VideoSquatSequenceAnalyzer videoSquatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, detector, new LoweringTimingAnalyzer(5, 3, 500));
+        List<TimestampedPoseResult> angles = new ArrayList<>();
+
+        TimestampedPoseResult one = new TimestampedPoseResult(0, createPoseResult(170), 100, 100);
+        TimestampedPoseResult two = new TimestampedPoseResult(250, createPoseResult(170), 100, 100);
+        TimestampedPoseResult three = new TimestampedPoseResult(500, createPoseResult(168), 100, 100);
+        TimestampedPoseResult four = new TimestampedPoseResult(750, createPoseResult(164), 100, 100);
+        TimestampedPoseResult five = new TimestampedPoseResult(1000, createPoseResult(145), 100, 100);
+        TimestampedPoseResult six = new TimestampedPoseResult(1250, createPoseResult(112), 100, 100);
+        TimestampedPoseResult seven = new TimestampedPoseResult(1500, createPoseResult(110), 100, 100);
+        TimestampedPoseResult eight = new TimestampedPoseResult(1750, createPoseResult(111), 100, 100);
+        TimestampedPoseResult nine = new TimestampedPoseResult(2000, createPoseResult(140), 100, 100);
+        TimestampedPoseResult ten = new TimestampedPoseResult(2250, createPoseResult(170), 100, 100);
+
+        angles.add(one);
+        angles.add(two);
+        angles.add(three);
+        angles.add(four);
+        angles.add(five);
+        angles.add(six);
+        angles.add(seven);
+        angles.add(eight);
+        angles.add(nine);
+        angles.add(ten);
+
+        SquatAnalysisResult result = videoSquatSequenceAnalyzer.analyze(angles);
+
+        Assert.assertEquals(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, result.getOutcome());
+        Assert.assertTrue(result.getLoweringTiming().isPresent());
+
+        LoweringTiming timing = result.getLoweringTiming().get();
+
+        Assert.assertEquals(500, timing.getLoweringStart());
+        Assert.assertEquals(1250, timing.getBottomReached());
+        Assert.assertEquals(750, timing.getDurationMilliseconds());
     }
 }

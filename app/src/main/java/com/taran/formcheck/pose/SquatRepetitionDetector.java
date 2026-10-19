@@ -124,4 +124,8 @@ public final class SquatRepetitionDetector {
             return new SquatAnalysisResult(SquatAnalysisOutcome.INSUFFICIENT_EVIDENCE, null);
         }
     }
+
+    public double getStandingAngleThreshold() {
+        return standingAngleThreshold;
+    }
 }

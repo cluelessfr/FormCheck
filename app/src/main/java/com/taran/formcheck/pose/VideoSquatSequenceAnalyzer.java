@@ -1,6 +1,7 @@
 package com.taran.formcheck.pose;
 
 import java.util.List;
+import java.util.Optional;
 
 public class VideoSquatSequenceAnalyzer {
     private final VideoKneeAngleSequenceAnalyzer analyzer;
@@ -38,6 +39,50 @@ public class VideoSquatSequenceAnalyzer {
         int standingStartIndex = -1;
         int returnToStandingIndex = -1;
 
-        return analysisResult;
+        for (int i = 0; i < timestampedAngles.size(); i++) {
+            long timestamp = timestampedAngles.get(i).getTimestampMilliseconds();
+
+            if (timestamp == repetition.getStandingStartTimestamp()) {
+                standingStartIndex = i;
+            }
+
+            if (timestamp == repetition.getReturnToStandingTimestamp()) {
+                returnToStandingIndex = i;
+            }
+        }
+
+        if (standingStartIndex == -1 || returnToStandingIndex == -1) {
+            return analysisResult;
+        }
+
+        int candidateStartIndex = standingStartIndex;
+
+        while (candidateStartIndex > 0) {
+            TimestampedKneeAngle current = timestampedAngles.get(candidateStartIndex);
+            TimestampedKneeAngle previous = timestampedAngles.get(candidateStartIndex - 1);
+
+            if (previous.getAngleDegrees() < detector.getStandingAngleThreshold()) {
+                break;
+            }
+
+            if (previous.getSide() != current.getSide()) {
+                break;
+            }
+
+            if (current.getTimestampMilliseconds() - previous.getTimestampMilliseconds() > loweringTimingAnalyzer.getMaximumGapMilliseconds()) {
+                break;
+            }
+
+            candidateStartIndex -= 1;
+        }
+
+        List<TimestampedKneeAngle> angles = timestampedAngles.subList(candidateStartIndex, returnToStandingIndex+1);
+        Optional<LoweringTiming> timings = loweringTimingAnalyzer.analyze(angles);
+
+        if (timings.isEmpty()) {
+            return analysisResult;
+        }
+
+        return new SquatAnalysisResult(analysisResult.getOutcome(), repetition, timings.get());
     }
 }

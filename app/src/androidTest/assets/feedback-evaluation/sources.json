@@ -1,0 +1,24 @@
+{
+  "purpose": "Reserved evaluation inputs for checkpoint 24. Do not use to tune the feedback rule.",
+  "videos": [
+    {
+      "file": "side-view-complete-squat.mp4",
+      "source": "https://www.youtube.com/watch?v=LMAnUBkEHL4",
+      "title": "squat side view.AVI",
+      "channel": "Bassett Healthcare Network",
+      "sourceStartSeconds": 0,
+      "case": "Complete squat viewed from the side; compare the finished timing measurement with a later manual review."
+    },
+    {
+      "file": "front-view-squat.mp4",
+      "source": "https://www.youtube.com/watch?v=aDG5m7BRhSQ",
+      "title": "Tempo Bodyweight Squat – Build Control, Strength & Perfect Depth",
+      "channel": "Train With Cuz",
+      "sourceStartSeconds": 10,
+      "sourceEndSeconds": 21,
+      "case": "Front-view section only; evaluate whether timing feedback is withheld when the camera view does not support a reliable measurement. This is not a bad-form label."
+    }
+  ],
+  "license": "No license provided by retrieved video metadata; redistribution permission has not been verified.",
+  "status": "Downloaded and visually reviewed; not analyzed by FormCheck."
+}

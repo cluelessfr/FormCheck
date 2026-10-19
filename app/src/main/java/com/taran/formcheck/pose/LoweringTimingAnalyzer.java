@@ -127,4 +127,8 @@ public class LoweringTimingAnalyzer {
 
         return Optional.of(loweringTiming);
     }
+
+    public long getMaximumGapMilliseconds() {
+        return maximumGap;
+    }
 }
