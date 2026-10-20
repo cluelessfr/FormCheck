@@ -123,7 +123,8 @@ public class LoweringTimingAnalyzer {
         long loweringStartTimestamp = angles.get(loweringStartIndex).getTimestampMilliseconds();
         long bottomTimestamp = angles.get(bottomIndex).getTimestampMilliseconds();
 
-        LoweringTiming loweringTiming = new LoweringTiming(loweringStartTimestamp, bottomTimestamp);
+        long boundaryAllowance = (angles.get(loweringStartIndex + 1).getTimestampMilliseconds() - loweringStartTimestamp) + (bottomTimestamp - angles.get(bottomIndex - 1).getTimestampMilliseconds());
+        LoweringTiming loweringTiming = new LoweringTiming(loweringStartTimestamp, bottomTimestamp, boundaryAllowance);
 
         return Optional.of(loweringTiming);
     }
