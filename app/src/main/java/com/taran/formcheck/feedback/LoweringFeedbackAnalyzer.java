@@ -1,5 +1,10 @@
 package com.taran.formcheck.feedback;
 
+import com.taran.formcheck.pose.SquatAnalysisOutcome;
+import com.taran.formcheck.pose.SquatAnalysisResult;
+
+import java.util.Optional;
+
 public class LoweringFeedbackAnalyzer {
     public static LoweringFeedbackOutcome compare(long estimatedDurationMS, LoweringPracticeTarget target) {
         if (!(estimatedDurationMS > 0)) {
@@ -40,5 +45,27 @@ public class LoweringFeedbackAnalyzer {
         }
 
         return LoweringFeedbackOutcome.UNAVAILABLE;
+    }
+
+    public static LoweringFeedbackOutcome analyze(SquatAnalysisResult result, LoweringPracticeTarget target) {
+        if (result == null) {
+            return LoweringFeedbackOutcome.UNAVAILABLE;
+        }
+
+        if (target == null) {
+            return LoweringFeedbackOutcome.UNAVAILABLE;
+        }
+
+        if (result.getLoweringTiming().isEmpty() || result.getOutcome() != SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED) {
+            return LoweringFeedbackOutcome.UNAVAILABLE;
+        }
+
+        Optional<LoweringDurationRange> range = LoweringDurationRange.fromTiming(result.getLoweringTiming().get());
+
+        if (range.isEmpty()) {
+            return LoweringFeedbackOutcome.UNAVAILABLE;
+        }
+
+        return compare(range.get(), target);
     }
 }

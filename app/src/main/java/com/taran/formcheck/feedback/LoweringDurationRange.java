@@ -1,5 +1,9 @@
 package com.taran.formcheck.feedback;
 
+import com.taran.formcheck.pose.LoweringTiming;
+
+import java.util.Optional;
+
 public class LoweringDurationRange {
     private final long minimumDurationMs;
     private final long maximumDurationMs;
@@ -23,5 +27,24 @@ public class LoweringDurationRange {
 
     public long getMaximumDurationMs() {
         return maximumDurationMs;
+    }
+
+    public static Optional<LoweringDurationRange> fromTiming(LoweringTiming loweringTiming) {
+        if (loweringTiming == null) {
+            return Optional.empty();
+        }
+
+        long duration = loweringTiming.getDurationMilliseconds();
+        long allowance = loweringTiming.getBoundarySamplingAllowanceMS();
+
+        if (allowance >= duration) {
+            return Optional.empty();
+        }
+
+        if (allowance > Long.MAX_VALUE - duration) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new LoweringDurationRange(duration - allowance, duration + allowance));
     }
 }
