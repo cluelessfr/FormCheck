@@ -42,7 +42,7 @@ public class LoweringFeedbackAnalyzerTest {
         SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
         LoweringTiming timing = new LoweringTiming(0, 3000, 500);
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, timing);
-        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500));
+        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), RecordingSuitability.CONFIRMED_SIDE_VIEW);
 
         Assert.assertEquals(LoweringFeedbackOutcome.NEAR_TARGET, outcome);
     }
@@ -51,7 +51,7 @@ public class LoweringFeedbackAnalyzerTest {
     public void testNullTiming() {
         SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, null);
-        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500));
+        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), RecordingSuitability.CONFIRMED_SIDE_VIEW);
 
         Assert.assertEquals(LoweringFeedbackOutcome.UNAVAILABLE, outcome);
     }
@@ -59,14 +59,14 @@ public class LoweringFeedbackAnalyzerTest {
     @Test
     public void testInsufficientEvidence() {
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.INSUFFICIENT_EVIDENCE, null, null);
-        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500));
+        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), RecordingSuitability.CONFIRMED_SIDE_VIEW);
 
         Assert.assertEquals(LoweringFeedbackOutcome.UNAVAILABLE, outcome);
     }
 
     @Test
     public void testNullResult() {
-        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(null, new LoweringPracticeTarget(3000, 500));
+        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(null, new LoweringPracticeTarget(3000, 500), RecordingSuitability.CONFIRMED_SIDE_VIEW);
 
         Assert.assertEquals(LoweringFeedbackOutcome.UNAVAILABLE, outcome);
     }
@@ -76,7 +76,37 @@ public class LoweringFeedbackAnalyzerTest {
         SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
         LoweringTiming timing = new LoweringTiming(0, 3000, 500);
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, timing);
-        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, null);
+        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, null, RecordingSuitability.CONFIRMED_SIDE_VIEW);
+
+        Assert.assertEquals(LoweringFeedbackOutcome.UNAVAILABLE, outcome);
+    }
+
+    @Test
+    public void testSuccessfulCaseWithUnsupportedSuitability() {
+        SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
+        LoweringTiming timing = new LoweringTiming(0, 3000, 500);
+        SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, timing);
+        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), RecordingSuitability.UNSUPPORTED_VIEW);
+
+        Assert.assertEquals(LoweringFeedbackOutcome.UNAVAILABLE, outcome);
+    }
+
+    @Test
+    public void testSuccessfulCaseWithUnknownSuitability() {
+        SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
+        LoweringTiming timing = new LoweringTiming(0, 3000, 500);
+        SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, timing);
+        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), RecordingSuitability.UNKNOWN);
+
+        Assert.assertEquals(LoweringFeedbackOutcome.UNAVAILABLE, outcome);
+    }
+
+    @Test
+    public void testSuccessfulCaseWithNullSuitability() {
+        SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
+        LoweringTiming timing = new LoweringTiming(0, 3000, 500);
+        SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, timing);
+        LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), null);
 
         Assert.assertEquals(LoweringFeedbackOutcome.UNAVAILABLE, outcome);
     }

@@ -47,7 +47,11 @@ public class LoweringFeedbackAnalyzer {
         return LoweringFeedbackOutcome.UNAVAILABLE;
     }
 
-    public static LoweringFeedbackOutcome analyze(SquatAnalysisResult result, LoweringPracticeTarget target) {
+    public static LoweringFeedbackOutcome analyze(SquatAnalysisResult result, LoweringPracticeTarget target, RecordingSuitability suitability) {
+        if (suitability != RecordingSuitability.CONFIRMED_SIDE_VIEW) {
+            return LoweringFeedbackOutcome.UNAVAILABLE;
+        }
+
         if (result == null) {
             return LoweringFeedbackOutcome.UNAVAILABLE;
         }
