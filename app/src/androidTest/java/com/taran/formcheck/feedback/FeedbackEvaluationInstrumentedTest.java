@@ -83,6 +83,56 @@ public class FeedbackEvaluationInstrumentedTest {
         }
     }
 
+    @Test
+    public void testFrontViewEvaluation() throws IOException {
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+        File cachedVideoFile = copyAssetToCache("feedback-evaluation/front-view-squat.mp4", "evaluation-front-view.mp4");
+
+        Uri uri = Uri.fromFile(cachedVideoFile);
+
+        try (VideoFrameDecoder decoder = new VideoFrameDecoder(appContext, uri);
+             PoseLandmarkerManager manager = new PoseLandmarkerManager(appContext)) {
+            List<TimestampedPoseResult> timestampedPoseResults = VideoPoseSequenceProcessor.processVideoPoseSequence(decoder, manager, 250);
+
+            LandmarkQualityGate gate = new LandmarkQualityGate(0.5, 0.5);
+            VideoKneeAngleSequenceAnalyzer analyzer = new VideoKneeAngleSequenceAnalyzer(gate);
+            SquatRepetitionDetector repetitionDetector = new SquatRepetitionDetector(160, 120);
+            LoweringTimingAnalyzer timingAnalyzer =  new LoweringTimingAnalyzer(5, 3, 500);
+            VideoSquatSequenceAnalyzer squatSequenceAnalyzer = new VideoSquatSequenceAnalyzer(analyzer, repetitionDetector, timingAnalyzer);
+
+            SquatAnalysisResult result = squatSequenceAnalyzer.analyze(timestampedPoseResults);
+
+            LoweringPracticeTarget target = new LoweringPracticeTarget(3000, 500);
+            LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, target, RecordingSuitability.UNSUPPORTED_VIEW);
+
+            String TAG = "FeedbackEvaluation";
+            Log.d(TAG, "Clip Name: front-view-squat; Repetition-detection outcome: " + result.getOutcome() + "; Feedback outcome: " + outcome);
+
+            if (result.getLoweringTiming().isPresent()) {
+                LoweringTiming timing = result.getLoweringTiming().get();
+                Log.d(TAG, "Start Timing: " + timing.getLoweringStart() + " Ms; Bottom Timing: " + timing.getBottomReached() + " Ms; Duration: " + timing.getDurationMilliseconds() + " Ms; Sampling Allowance: " + timing.getBoundarySamplingAllowanceMS() + " Ms");
+                Optional<LoweringDurationRange> range  = LoweringDurationRange.fromTiming(timing);
+
+                if (range.isPresent()) {
+                    Log.d(TAG, "Minimum: " + range.get().getMinimumDurationMs() + " Ms; Maximum: " + range.get().getMaximumDurationMs() + " Ms");
+                }
+                else {
+                    Log.d(TAG, "Duration range unavailable");
+                }
+            }
+            else {
+                Log.d(TAG, "Lowering timing unavailable");
+            }
+
+            Assert.assertEquals(LoweringFeedbackOutcome.UNAVAILABLE, outcome);
+        }
+
+        finally {
+            cachedVideoFile.delete();
+        }
+    }
+
     private File copyAssetToCache(String assetPath, String cacheFilename) throws IOException{
         Context testContext = InstrumentationRegistry.getInstrumentation().getContext();
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
