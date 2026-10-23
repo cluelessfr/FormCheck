@@ -1,5 +1,6 @@
 package com.taran.formcheck;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -138,6 +139,9 @@ public class MainActivity extends AppCompatActivity {
                         repetitionDetailsText.setText(repetitionDetails);
                         selectVideoButton.setEnabled(true);
                         analyzeVideoButton.setEnabled(true);
+
+                        Intent intent = new Intent(this, ResultsActivity.class);
+                        startActivity(intent);
                     });
                 }
                 catch (Exception exception) {
