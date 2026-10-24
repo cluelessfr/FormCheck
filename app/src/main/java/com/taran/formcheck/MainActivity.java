@@ -180,6 +180,14 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra(ResultsActivity.EXTRA_FEEDBACK_OUTCOME, outcome.name());
                         intent.putExtra(ResultsActivity.EXTRA_ANALYSIS_OUTCOME, result.getOutcome().name());
 
+                        if (result.getOutcome().equals(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED)) {
+                            SquatRepetition repetition = result.getRepetition();
+
+                            intent.putExtra(ResultsActivity.EXTRA_STANDING_START_MS, repetition.getStandingStartTimestamp());
+                            intent.putExtra(ResultsActivity.EXTRA_LOWEST_ANGLE_MS, repetition.getLowestAngleTimestamp());
+                            intent.putExtra(ResultsActivity.EXTRA_RETURN_TO_STANDING_MS, repetition.getReturnToStandingTimestamp());
+                        }
+
                         startActivity(intent);
                     });
                 }

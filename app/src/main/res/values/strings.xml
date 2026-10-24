@@ -23,5 +23,7 @@
     <string name="lowering_feedback_near">Your estimated lowering phase was near your selected practice target.</string>
     <string name="lowering_feedback_longer">Your estimated lowering phase was longer than your selected practice target.</string>
     <string name="lowering_feedback_unavailable">Lowering feedback is unavailable for this analysis.</string>
+    <string name="analysis_results_preview">Sampled video times will appear here.</string>
+    <string name="sampled_times_unavailable">Sampled video times are unavailable for this analysis</string>
     <string-array name="lowering_target_options"><item>No target</item><item>1 second</item><item>2 seconds</item><item>3 seconds</item><item>4 seconds</item></string-array>
 </resources>
