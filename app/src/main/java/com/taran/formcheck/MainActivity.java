@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(this, ResultsActivity.class);
 
                         intent.putExtra(ResultsActivity.EXTRA_FEEDBACK_OUTCOME, outcome.name());
+                        intent.putExtra(ResultsActivity.EXTRA_ANALYSIS_OUTCOME, result.getOutcome().name());
 
                         startActivity(intent);
                     });
