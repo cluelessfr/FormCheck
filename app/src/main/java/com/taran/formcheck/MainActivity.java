@@ -13,10 +13,16 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import android.net.Uri;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.util.Log;
 
 import com.taran.formcheck.analysis.LandmarkQualityGate;
+import com.taran.formcheck.feedback.LoweringFeedbackAnalyzer;
+import com.taran.formcheck.feedback.LoweringFeedbackOutcome;
+import com.taran.formcheck.feedback.LoweringPracticeTarget;
+import com.taran.formcheck.feedback.RecordingSuitability;
 import com.taran.formcheck.pose.LoweringTimingAnalyzer;
 import com.taran.formcheck.pose.PoseLandmarkerManager;
 import com.taran.formcheck.pose.SquatAnalysisOutcome;
@@ -64,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         Button analyzeVideoButton = findViewById(R.id.analyzeVideoButton);
         TextView analysisResultText = findViewById(R.id.analysisResultText);
         TextView repetitionDetailsText = findViewById(R.id.repetitionDetailsText);
+        Spinner loweringTargetSpinner = findViewById(R.id.loweringTargetSpinner);
+        CheckBox recordingSuitabilityCheckBox = findViewById(R.id.recordingSuitabilityCheckBox);
 
         ActivityResultLauncher<String[]> videoPickerLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), inputUri -> {
             if (inputUri != null) {
@@ -72,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 analyzeVideoButton.setEnabled(true);
                 analysisResultText.setText(R.string.analysis_not_started);
                 repetitionDetailsText.setText("");
+                recordingSuitabilityCheckBox.setChecked(false);
             }
         });
 
@@ -84,9 +93,30 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
+            int position = loweringTargetSpinner.getSelectedItemPosition();
+            LoweringPracticeTarget target;
+
+            if (position >= 1 && position <= 4) {
+                target = new LoweringPracticeTarget(position * 1000, 500);
+            }
+            else {
+                target = null;
+            }
+
+            RecordingSuitability suitability;
+
+            if (recordingSuitabilityCheckBox.isChecked()) {
+                suitability = RecordingSuitability.CONFIRMED_SIDE_VIEW;
+            }
+            else {
+                suitability = RecordingSuitability.UNKNOWN;
+            }
+
             analyzeVideoButton.setEnabled(false);
             selectVideoButton.setEnabled(false);
             analysisResultText.setText(R.string.analysis_in_progress);
+            loweringTargetSpinner.setEnabled(false);
+            recordingSuitabilityCheckBox.setEnabled(false);
             repetitionDetailsText.setText("");
 
             analysisExecutor.submit(() -> {
@@ -100,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
 
                         analysisResultText.setText(getString(R.string.analysis_frame_progress, processedFrames, totalFrames));
                     })));
+
+                    LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, target, suitability);
+                    Log.d(TAG, "Lowering feedback outcome: " + outcome);
 
                     long endTime = System.nanoTime();
 
@@ -139,8 +172,13 @@ public class MainActivity extends AppCompatActivity {
                         repetitionDetailsText.setText(repetitionDetails);
                         selectVideoButton.setEnabled(true);
                         analyzeVideoButton.setEnabled(true);
+                        loweringTargetSpinner.setEnabled(true);
+                        recordingSuitabilityCheckBox.setEnabled(true);
 
                         Intent intent = new Intent(this, ResultsActivity.class);
+
+                        intent.putExtra(ResultsActivity.EXTRA_FEEDBACK_OUTCOME, outcome.name());
+
                         startActivity(intent);
                     });
                 }
@@ -155,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
                         analysisResultText.setText(R.string.analysis_failed);
                         selectVideoButton.setEnabled(true);
                         analyzeVideoButton.setEnabled(true);
+                        loweringTargetSpinner.setEnabled(true);
+                        recordingSuitabilityCheckBox.setEnabled(true);
                     });
                 }
             });
