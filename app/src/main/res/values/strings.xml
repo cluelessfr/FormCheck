@@ -16,4 +16,8 @@
     <string name="analysis_limitations">This detection uses experimental thresholds and sampled video frames. Detecting a repetition does not assess exercise safety or provide medical advice.</string>
     <string name="results_title">Analysis Results</string>
     <string name="back_to_main">Back to main screen</string>
+    <string name="lowering_target_label">Practice lowering target (optional)</string>
+    <string name="lowering_target_help">Choose a practice target to compare against. These options are not recommendations</string>
+    <string name="recording_confirmation">I confirm this video shows a clear side view with the whole body visible.</string>
+    <string-array name="lowering_target_options"><item>No target</item><item>1 second</item><item>2 seconds</item><item>3 seconds</item><item>4 seconds</item></string-array>
 </resources>
