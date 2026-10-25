@@ -48,4 +48,8 @@
     <string name="lowering_feedback_timing_unavailable">Lowering feedback is unavailable because lowering timing could not be estimated.</string>
     <string name="lowering_feedback_range_unavailable">Lowering feedback is unavailable because a sampling-based duration range could not be formed.</string>
     <string name="lowering_feedback_ambiguous_range">The sampling-based duration range crosses a comparison boundary, so no single target comparison is available.</string>
+    <string name="analysis_complete">Analysis complete. Select another video or analyze again.</string>
+    <string name="analysis_interrupted">Analysis was interrupted. Keep FormCheck open and tap Analyze video to try again.</string>
+    <string name="cancel_analysis">Cancel analysis</string>
+    <string name="analysis_cancelled">Analysis cancelled. You can analyze again or select another video.</string>
 </resources>

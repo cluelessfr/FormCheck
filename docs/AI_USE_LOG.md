@@ -61,4 +61,10 @@ When the gap between observations is larger than the configured gap, the detecti
 I tested all the states of the app, which were a successful detection, insufficient evidence, failed analysis, and recovery from another state to the current state. Codex created the invalid video used fo the failure test. 
 
 ## 10/24/2026
-Codex helped implement the display of knee angles on the results screen. 
+Codex helped implement the display of knee angles on the results screen.
+Codex implemented the repetition sample model and detector changes, updated their tests, added the measured-angle display and unavailable-feedback explanations, and completed main-screen cleanup and lifecycle handling at my explicit request. Lifecycle handling preserves selected inputs after recreation and cancels interrupted analysis with a retry message. Codex also added and ran focused emulator reliability tests. These checks verify app behavior, not measurement accuracy.
+Verification on the Pixel 7 Android 17 emulator: 91 JVM tests passed; the debug build passed; all 5 focused lifecycle/navigation tests passed, including two real analyses of the short test clip. The background-state test uses a controlled FutureTask. Layout checks passed at 150% font scale on 840x1400 light portrait and 1400x840 dark landscape displays; those layout checks use supplied fixture extras. Screenshots confirmed bottom fields remain reachable with a fixed toolbar. Original emulator settings were restored. Rotation/background interruption requires retry rather than resuming analysis. These tests do not independently validate squat timing or angle accuracy.
+
+At my request, Codex added a Cancel analysis button using the existing interruption handling, preserved the selected inputs and cancelled status, and expanded the emulator test to cancel an actual submitted analysis before retrying it.
+
+Cancel-button verification: the debug build, 91 JVM tests, and all 5 focused emulator tests passed, including cancel, recreation of cancelled state, and two subsequent real analyses.

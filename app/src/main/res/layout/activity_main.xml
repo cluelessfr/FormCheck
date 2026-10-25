@@ -136,6 +136,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recordingSuitabilityCheckBox"
+            app:layout_constraintBottom_toTopOf="@id/cancelAnalysisButton" />
+
+        <Button
+            android:id="@+id/cancelAnalysisButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minHeight="48dp"
+            android:text="@string/cancel_analysis"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/analyzeVideoButton"
             app:layout_constraintBottom_toTopOf="@id/analysisResultText" />
 
         <TextView
@@ -150,22 +163,7 @@
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/analyzeVideoButton"
-            app:layout_constraintBottom_toTopOf="@id/repetitionDetailsText" />
-
-        <TextView
-            android:id="@+id/repetitionDetailsText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginTop="12dp"
-            android:gravity="center"
-            android:text=""
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/analysisResultText"
+            app:layout_constraintTop_toBottomOf="@id/cancelAnalysisButton"
             app:layout_constraintBottom_toTopOf="@id/privacyText" />
 
         <TextView
@@ -180,7 +178,7 @@
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/repetitionDetailsText"
+            app:layout_constraintTop_toBottomOf="@id/analysisResultText"
             app:layout_constraintBottom_toTopOf="@id/analysisLimitationsText" />
 
         <TextView

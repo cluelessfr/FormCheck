@@ -5,6 +5,7 @@ import com.taran.formcheck.video.VideoFrameDecoder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 public class VideoPoseSequenceProcessor {
     public static List<TimestampedPoseResult> processVideoPoseSequence(VideoFrameDecoder decoder, PoseLandmarkerManager manager, long intervalMilliseconds) {
@@ -25,6 +26,9 @@ public class VideoPoseSequenceProcessor {
         List<TimestampedPoseResult> results = new ArrayList<>();
 
         for (Long timestamp:timestamps) {
+            if (Thread.currentThread().isInterrupted()) {
+                throw new CancellationException("Video analysis was interrupted");
+            }
             TimestampedPoseResult result = VideoFramePoseProcessor.processPoseFrame(decoder, manager, timestamp);
             results.add(result);
 
