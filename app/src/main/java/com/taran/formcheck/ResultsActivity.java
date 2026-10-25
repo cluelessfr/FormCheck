@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.taran.formcheck.feedback.LoweringFeedbackOutcome;
+import com.taran.formcheck.feedback.RecordingSuitability;
 import com.taran.formcheck.pose.SquatAnalysisOutcome;
 
 public class ResultsActivity extends AppCompatActivity {
@@ -21,6 +22,7 @@ public class ResultsActivity extends AppCompatActivity {
     public static final String EXTRA_RETURN_TO_STANDING_MS = "com.taran.formcheck.extra.RETURN_TO_STANDING_MS";
     public static final String EXTRA_TARGET_DURATION_MS = "com.taran.formcheck.extra.TARGET_DURATION_MS";
     public static final String EXTRA_TARGET_TOLERANCE_MS = "com.taran.formcheck.extra.TARGET_TOLERANCE_MS";
+    public static final String EXTRA_RECORDING_SUITABILITY = "com.taran.formcheck.extra.RECORDING_SUITABILITY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +34,11 @@ public class ResultsActivity extends AppCompatActivity {
         TextView detectionOutcomeText = findViewById(R.id.detectionOutcomeText);
         TextView sampledTextTimes = findViewById(R.id.sampledTimesText);
         TextView practiceTargetText = findViewById(R.id.practiceTargetText);
+        TextView recordingStatusText = findViewById(R.id.recordingStatusText);
 
         String receivedOutcome = getIntent().getStringExtra(EXTRA_FEEDBACK_OUTCOME);
         String receivedAnalysisOutcome = getIntent().getStringExtra(EXTRA_ANALYSIS_OUTCOME);
+        String receivedRecordingSuitability = getIntent().getStringExtra(EXTRA_RECORDING_SUITABILITY);
 
         long standingStartMs = getIntent().getLongExtra(EXTRA_STANDING_START_MS, -1);
         long lowestAngleMs = getIntent().getLongExtra(EXTRA_LOWEST_ANGLE_MS, -1);
@@ -44,6 +48,7 @@ public class ResultsActivity extends AppCompatActivity {
 
         int messageResource = R.string.lowering_feedback_unavailable;
         int detectionMessageResource = R.string.insufficient_evidence;
+        int recordingMessageResource = R.string.recording_status_unconfirmed;
 
         if (LoweringFeedbackOutcome.SHORTER_THAN_TARGET.name().equals(receivedOutcome)) {
             messageResource = R.string.lowering_feedback_shorter;
@@ -85,8 +90,16 @@ public class ResultsActivity extends AppCompatActivity {
             practiceTargetText.setText(R.string.practice_target_unavailable);
         }
 
+        if (RecordingSuitability.CONFIRMED_SIDE_VIEW.name().equals(receivedRecordingSuitability)) {
+            recordingMessageResource = R.string.recording_status_confirmed;
+        }
+        else if (RecordingSuitability.UNSUPPORTED_VIEW.name().equals(receivedRecordingSuitability)){
+            recordingMessageResource = R.string.recording_status_unsupported;
+        }
+
         loweringFeedbackText.setText(messageResource);
         detectionOutcomeText.setText(detectionMessageResource);
+        recordingStatusText.setText(recordingMessageResource);
 
         MaterialToolbar resultsToolbar = findViewById(R.id.resultsToolbar);
 

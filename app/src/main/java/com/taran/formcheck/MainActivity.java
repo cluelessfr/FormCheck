@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
                         intent.putExtra(ResultsActivity.EXTRA_FEEDBACK_OUTCOME, outcome.name());
                         intent.putExtra(ResultsActivity.EXTRA_ANALYSIS_OUTCOME, result.getOutcome().name());
+                        intent.putExtra(ResultsActivity.EXTRA_RECORDING_SUITABILITY, suitability.name());
 
                         if (result.getOutcome().equals(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED)) {
                             SquatRepetition repetition = result.getRepetition();
