@@ -6,7 +6,7 @@ import org.junit.Test;
 public class SquatAnalysisResultTest {
     @Test
     public void testValidInputs() {
-        SquatRepetition repetition = new SquatRepetition(0, 1000, 20000);
+        SquatRepetition repetition = new SquatRepetition(new TimestampedKneeAngle(0, BodySide.LEFT, 171), new TimestampedKneeAngle(1000, BodySide.LEFT, 108), new TimestampedKneeAngle(20000, BodySide.LEFT, 168));
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition);
         Assert.assertEquals(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, result.getOutcome());
         Assert.assertEquals(repetition, result.getRepetition());
@@ -21,7 +21,7 @@ public class SquatAnalysisResultTest {
         Assert.assertThrows(IllegalArgumentException.class, () -> new SquatAnalysisResult(null, null));
         Assert.assertThrows(IllegalArgumentException.class, () -> new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, null));
 
-        SquatRepetition repetition = new SquatRepetition(0, 1000, 20000);
+        SquatRepetition repetition = new SquatRepetition(new TimestampedKneeAngle(0, BodySide.LEFT, 171), new TimestampedKneeAngle(1000, BodySide.LEFT, 108), new TimestampedKneeAngle(20000, BodySide.LEFT, 168));
         Assert.assertThrows(IllegalArgumentException.class, () -> new SquatAnalysisResult(SquatAnalysisOutcome.INSUFFICIENT_EVIDENCE, repetition));
     }
 }

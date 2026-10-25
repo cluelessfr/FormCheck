@@ -1,6 +1,8 @@
 package com.taran.formcheck.feedback;
 
 import com.taran.formcheck.pose.LoweringTiming;
+import com.taran.formcheck.pose.BodySide;
+import com.taran.formcheck.pose.TimestampedKneeAngle;
 import com.taran.formcheck.pose.SquatAnalysisOutcome;
 import com.taran.formcheck.pose.SquatAnalysisResult;
 import com.taran.formcheck.pose.SquatRepetition;
@@ -39,7 +41,7 @@ public class LoweringFeedbackAnalyzerTest {
 
     @Test
     public void testSuccessfulCase() {
-        SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
+        SquatRepetition repetition = new SquatRepetition(new TimestampedKneeAngle(0, BodySide.LEFT, 171), new TimestampedKneeAngle(3000, BodySide.LEFT, 108), new TimestampedKneeAngle(4000, BodySide.LEFT, 168));
         LoweringTiming timing = new LoweringTiming(0, 3000, 500);
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, timing);
         LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), RecordingSuitability.CONFIRMED_SIDE_VIEW);
@@ -49,7 +51,7 @@ public class LoweringFeedbackAnalyzerTest {
 
     @Test
     public void testNullTiming() {
-        SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
+        SquatRepetition repetition = new SquatRepetition(new TimestampedKneeAngle(0, BodySide.LEFT, 171), new TimestampedKneeAngle(3000, BodySide.LEFT, 108), new TimestampedKneeAngle(4000, BodySide.LEFT, 168));
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, null);
         LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), RecordingSuitability.CONFIRMED_SIDE_VIEW);
 
@@ -73,7 +75,7 @@ public class LoweringFeedbackAnalyzerTest {
 
     @Test
     public void testNullTarget() {
-        SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
+        SquatRepetition repetition = new SquatRepetition(new TimestampedKneeAngle(0, BodySide.LEFT, 171), new TimestampedKneeAngle(3000, BodySide.LEFT, 108), new TimestampedKneeAngle(4000, BodySide.LEFT, 168));
         LoweringTiming timing = new LoweringTiming(0, 3000, 500);
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, timing);
         LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, null, RecordingSuitability.CONFIRMED_SIDE_VIEW);
@@ -83,7 +85,7 @@ public class LoweringFeedbackAnalyzerTest {
 
     @Test
     public void testSuccessfulCaseWithUnsupportedSuitability() {
-        SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
+        SquatRepetition repetition = new SquatRepetition(new TimestampedKneeAngle(0, BodySide.LEFT, 171), new TimestampedKneeAngle(3000, BodySide.LEFT, 108), new TimestampedKneeAngle(4000, BodySide.LEFT, 168));
         LoweringTiming timing = new LoweringTiming(0, 3000, 500);
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, timing);
         LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), RecordingSuitability.UNSUPPORTED_VIEW);
@@ -93,7 +95,7 @@ public class LoweringFeedbackAnalyzerTest {
 
     @Test
     public void testSuccessfulCaseWithUnknownSuitability() {
-        SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
+        SquatRepetition repetition = new SquatRepetition(new TimestampedKneeAngle(0, BodySide.LEFT, 171), new TimestampedKneeAngle(3000, BodySide.LEFT, 108), new TimestampedKneeAngle(4000, BodySide.LEFT, 168));
         LoweringTiming timing = new LoweringTiming(0, 3000, 500);
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, timing);
         LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), RecordingSuitability.UNKNOWN);
@@ -103,7 +105,7 @@ public class LoweringFeedbackAnalyzerTest {
 
     @Test
     public void testSuccessfulCaseWithNullSuitability() {
-        SquatRepetition repetition = new SquatRepetition(0, 3000, 4000);
+        SquatRepetition repetition = new SquatRepetition(new TimestampedKneeAngle(0, BodySide.LEFT, 171), new TimestampedKneeAngle(3000, BodySide.LEFT, 108), new TimestampedKneeAngle(4000, BodySide.LEFT, 168));
         LoweringTiming timing = new LoweringTiming(0, 3000, 500);
         SquatAnalysisResult result = new SquatAnalysisResult(SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED, repetition, timing);
         LoweringFeedbackOutcome outcome = LoweringFeedbackAnalyzer.analyze(result, new LoweringPracticeTarget(3000, 500), null);

@@ -1,29 +1,49 @@
 package com.taran.formcheck.pose;
 
 public final class SquatRepetition {
-    private final long standingStartTimestamp;
-    private final long lowestAngleTimestamp;
-    private final long returnToStandingTimestamp;
+    private final TimestampedKneeAngle standingStart;
+    private final TimestampedKneeAngle lowestAngle;
+    private final TimestampedKneeAngle returnToStanding;
 
-    public SquatRepetition(long standingStartTimestamp, long lowestAngleTimestamp, long returnToStandingTimestamp) {
-        if (!(0 <= standingStartTimestamp && standingStartTimestamp < lowestAngleTimestamp && lowestAngleTimestamp < returnToStandingTimestamp)) {
+    public SquatRepetition(TimestampedKneeAngle standingStart, TimestampedKneeAngle lowestAngle, TimestampedKneeAngle returnToStanding) {
+        if (standingStart == null || lowestAngle == null || returnToStanding == null) {
+            throw new IllegalArgumentException("Angle samples cannot be null");
+        }
+
+        if (!(standingStart.getTimestampMilliseconds() < lowestAngle.getTimestampMilliseconds() && lowestAngle.getTimestampMilliseconds() < returnToStanding.getTimestampMilliseconds())) {
             throw new IllegalArgumentException("All angle timestamps must be nonnegative and in increasing order");
         }
 
-        this.standingStartTimestamp = standingStartTimestamp;
-        this.lowestAngleTimestamp = lowestAngleTimestamp;
-        this.returnToStandingTimestamp = returnToStandingTimestamp;
+        if (standingStart.getSide() != lowestAngle.getSide() || lowestAngle.getSide() != returnToStanding.getSide()) {
+            throw new IllegalArgumentException("All angle samples must use the same body side");
+        }
+
+        this.standingStart = standingStart;
+        this.lowestAngle = lowestAngle;
+        this.returnToStanding = returnToStanding;
     }
 
     public long getStandingStartTimestamp() {
-        return standingStartTimestamp;
+        return standingStart.getTimestampMilliseconds();
     }
 
     public long getLowestAngleTimestamp() {
-        return lowestAngleTimestamp;
+        return lowestAngle.getTimestampMilliseconds();
     }
 
     public long getReturnToStandingTimestamp() {
-        return returnToStandingTimestamp;
+        return returnToStanding.getTimestampMilliseconds();
+    }
+
+    public double getStandingStartAngleDegrees() {
+        return standingStart.getAngleDegrees();
+    }
+
+    public double getLowestAngleDegrees() {
+        return lowestAngle.getAngleDegrees();
+    }
+
+    public double getReturnToStandingAngleDegrees() {
+        return returnToStanding.getAngleDegrees();
     }
 }

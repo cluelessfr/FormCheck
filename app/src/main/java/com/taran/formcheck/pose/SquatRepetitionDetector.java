@@ -47,11 +47,11 @@ public final class SquatRepetitionDetector {
             return Optional.empty();
         }
 
-        Long standingStartTimestamp = null;
+        TimestampedKneeAngle standingStart = null;
         Long previousTimestampMilliseconds = null;
         BodySide previousSide = null;
         double smallestAngle = Double.POSITIVE_INFINITY;
-        long smallestAngleTimestamp = -1;
+        TimestampedKneeAngle lowestAngle = null;
         boolean reachedBottom = false;
 
         for (TimestampedKneeAngle angle : angles) {
@@ -63,42 +63,42 @@ public final class SquatRepetitionDetector {
             }
 
             if (previousTimestampMilliseconds != null && timestampMilliseconds - previousTimestampMilliseconds > maximumGapMilliseconds) {
-                standingStartTimestamp = null;
+                standingStart = null;
                 smallestAngle = Double.POSITIVE_INFINITY;
-                smallestAngleTimestamp = -1;
+                lowestAngle = null;
                 reachedBottom = false;
             }
 
             if (previousSide != null && previousSide != angle.getSide()) {
-                standingStartTimestamp = null;
+                standingStart = null;
                 smallestAngle = Double.POSITIVE_INFINITY;
-                smallestAngleTimestamp = -1;
+                lowestAngle = null;
                 reachedBottom = false;
             }
 
             previousTimestampMilliseconds = timestampMilliseconds;
             previousSide = angle.getSide();
 
-            if (standingStartTimestamp == null) {
+            if (standingStart == null) {
                 if (angleDegrees >= standingAngleThreshold) {
-                    standingStartTimestamp = timestampMilliseconds;
+                    standingStart = angle;
                     smallestAngle = angleDegrees;
-                    smallestAngleTimestamp = timestampMilliseconds;
+                    lowestAngle = angle;
                 }
 
                 continue;
             }
 
             if (!reachedBottom && angleDegrees >= standingAngleThreshold) {
-                standingStartTimestamp = timestampMilliseconds;
+                standingStart = angle;
                 smallestAngle = angleDegrees;
-                smallestAngleTimestamp = timestampMilliseconds;
+                lowestAngle = angle;
                 continue;
             }
 
             if (angleDegrees < smallestAngle) {
                 smallestAngle = angleDegrees;
-                smallestAngleTimestamp = timestampMilliseconds;
+                lowestAngle = angle;
             }
 
             if (angleDegrees <= bottomAngleThreshold) {
@@ -106,7 +106,7 @@ public final class SquatRepetitionDetector {
             }
 
             if (reachedBottom && angleDegrees >= standingAngleThreshold) {
-                SquatRepetition repetition = new SquatRepetition(standingStartTimestamp, smallestAngleTimestamp, timestampMilliseconds);
+                SquatRepetition repetition = new SquatRepetition(standingStart, lowestAngle, angle);
                 return Optional.of(repetition);
             }
         }

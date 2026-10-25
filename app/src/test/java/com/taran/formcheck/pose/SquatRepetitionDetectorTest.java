@@ -9,6 +9,28 @@ import java.util.Optional;
 
 public class SquatRepetitionDetectorTest {
     @Test
+    public void testRetainsSelectedAngleSamples() {
+        SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
+        List<TimestampedKneeAngle> angles = new ArrayList<>();
+        angles.add(new TimestampedKneeAngle(0, BodySide.RIGHT, 175));
+        angles.add(new TimestampedKneeAngle(250, BodySide.RIGHT, 167));
+        angles.add(new TimestampedKneeAngle(500, BodySide.RIGHT, 145));
+        angles.add(new TimestampedKneeAngle(750, BodySide.RIGHT, 115));
+        angles.add(new TimestampedKneeAngle(1000, BodySide.RIGHT, 103));
+        angles.add(new TimestampedKneeAngle(1250, BodySide.RIGHT, 140));
+        angles.add(new TimestampedKneeAngle(1500, BodySide.RIGHT, 169));
+
+        SquatRepetition repetition = detector.detect(angles).get();
+
+        Assert.assertEquals(250, repetition.getStandingStartTimestamp());
+        Assert.assertEquals(1000, repetition.getLowestAngleTimestamp());
+        Assert.assertEquals(1500, repetition.getReturnToStandingTimestamp());
+        Assert.assertEquals(167, repetition.getStandingStartAngleDegrees(), 0);
+        Assert.assertEquals(103, repetition.getLowestAngleDegrees(), 0);
+        Assert.assertEquals(169, repetition.getReturnToStandingAngleDegrees(), 0);
+    }
+
+    @Test
     public void testValidInputs() {
         SquatRepetitionDetector detector = new SquatRepetitionDetector(160, 120);
     }
