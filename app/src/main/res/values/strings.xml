@@ -39,4 +39,7 @@
     <string name="lowering_duration_valid">Sampling-based duration range: %1$.2f–%2$.2f s. This reflects frame sampling only; other measurement errors are not included.</string>
     <string name="lowering_duration_invalid">Sampling-based duration range is unavailable.</string>
     <string-array name="lowering_target_options"><item>No target</item><item>1 second</item><item>2 seconds</item><item>3 seconds</item><item>4 seconds</item></string-array>
+    <string name="measured_angles_preview">Estimated knee angles will appear here.</string>
+    <string name="measured_angles_valid">Estimated knee angles — standing: %1$.1f°; lowest: %2$.1f°; return to standing: %3$.1f°.</string>
+    <string name="measured_angles_unavailable">Estimated knee angles are unavailable for this analysis.</string>
 </resources>

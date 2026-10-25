@@ -27,6 +27,9 @@ public class ResultsActivity extends AppCompatActivity {
     public static final String EXTRA_LOWERING_BOTTOM_MS = "com.taran.formcheck.extra.LOWERING_BOTTOM_MS";
     public static final String EXTRA_MINIMUM_DURATION_MS = "com.taran.formcheck.extra.MINIMUM_DURATION_MS";
     public static final String EXTRA_MAXIMUM_DURATION_MS = "com.taran.formcheck.extra.MAXIMUM_DURATION_MS";
+    public static final String EXTRA_STANDING_ANGLE_DEGREES = "com.taran.formcheck.extra.STANDING_ANGLE_DEGREES";
+    public static final String EXTRA_LOWEST_ANGLE_DEGREES = "com.taran.formcheck.extra.LOWEST_ANGLE_DEGREES";
+    public static final String EXTRA_RETURN_ANGLE_DEGREES = "com.taran.formcheck.extra.RETURN_ANGLE_DEGREES";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class ResultsActivity extends AppCompatActivity {
         TextView recordingStatusText = findViewById(R.id.recordingStatusText);
         TextView loweringTimingText = findViewById(R.id.loweringTimingText);
         TextView loweringDurationText = findViewById(R.id.loweringDurationText);
+        TextView measuredAnglesText = findViewById(R.id.measuredAnglesText);
 
         String receivedOutcome = getIntent().getStringExtra(EXTRA_FEEDBACK_OUTCOME);
         String receivedAnalysisOutcome = getIntent().getStringExtra(EXTRA_ANALYSIS_OUTCOME);
@@ -56,6 +60,9 @@ public class ResultsActivity extends AppCompatActivity {
         long durationMs = loweringBottomMs - loweringStartMs;
         long minimumDurationMs = getIntent().getLongExtra(EXTRA_MINIMUM_DURATION_MS, -1);
         long maximumDurationMs = getIntent().getLongExtra(EXTRA_MAXIMUM_DURATION_MS, -1);
+        double standingAngleDegrees = getIntent().getDoubleExtra(EXTRA_STANDING_ANGLE_DEGREES, -1);
+        double lowestAngleDegrees = getIntent().getDoubleExtra(EXTRA_LOWEST_ANGLE_DEGREES, -1);
+        double returnAngleDegrees = getIntent().getDoubleExtra(EXTRA_RETURN_ANGLE_DEGREES, -1);
 
         int messageResource = R.string.lowering_feedback_unavailable;
         int detectionMessageResource = R.string.insufficient_evidence;
@@ -131,6 +138,18 @@ public class ResultsActivity extends AppCompatActivity {
         }
         else {
             loweringDurationText.setText(R.string.lowering_duration_invalid);
+        }
+
+        if (SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED.name().equals(receivedAnalysisOutcome)
+                && Double.isFinite(standingAngleDegrees) && standingAngleDegrees >= 0 && standingAngleDegrees <= 180
+                && Double.isFinite(lowestAngleDegrees) && lowestAngleDegrees >= 0 && lowestAngleDegrees <= 180
+                && Double.isFinite(returnAngleDegrees) && returnAngleDegrees >= 0 && returnAngleDegrees <= 180) {
+            String measuredAngles = getString(R.string.measured_angles_valid, standingAngleDegrees, lowestAngleDegrees, returnAngleDegrees);
+
+            measuredAnglesText.setText(measuredAngles);
+        }
+        else {
+            measuredAnglesText.setText(R.string.measured_angles_unavailable);
         }
 
         loweringFeedbackText.setText(messageResource);
