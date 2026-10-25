@@ -188,6 +188,11 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra(ResultsActivity.EXTRA_RETURN_TO_STANDING_MS, repetition.getReturnToStandingTimestamp());
                         }
 
+                        if (target != null) {
+                            intent.putExtra(ResultsActivity.EXTRA_TARGET_DURATION_MS, target.getTargetDurationMS());
+                            intent.putExtra(ResultsActivity.EXTRA_TARGET_TOLERANCE_MS, target.getComparisonToleranceMS());
+                        }
+
                         startActivity(intent);
                     });
                 }

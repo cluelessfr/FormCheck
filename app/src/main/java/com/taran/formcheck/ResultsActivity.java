@@ -19,6 +19,8 @@ public class ResultsActivity extends AppCompatActivity {
     public static final String EXTRA_STANDING_START_MS = "com.taran.formcheck.extra.STANDING_START_MS";
     public static final String EXTRA_LOWEST_ANGLE_MS = "com.taran.formcheck.extra.LOWEST_ANGLE_MS";
     public static final String EXTRA_RETURN_TO_STANDING_MS = "com.taran.formcheck.extra.RETURN_TO_STANDING_MS";
+    public static final String EXTRA_TARGET_DURATION_MS = "com.taran.formcheck.extra.TARGET_DURATION_MS";
+    public static final String EXTRA_TARGET_TOLERANCE_MS = "com.taran.formcheck.extra.TARGET_TOLERANCE_MS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class ResultsActivity extends AppCompatActivity {
         TextView loweringFeedbackText = findViewById(R.id.loweringFeedbackText);
         TextView detectionOutcomeText = findViewById(R.id.detectionOutcomeText);
         TextView sampledTextTimes = findViewById(R.id.sampledTimesText);
+        TextView practiceTargetText = findViewById(R.id.practiceTargetText);
 
         String receivedOutcome = getIntent().getStringExtra(EXTRA_FEEDBACK_OUTCOME);
         String receivedAnalysisOutcome = getIntent().getStringExtra(EXTRA_ANALYSIS_OUTCOME);
@@ -36,6 +39,8 @@ public class ResultsActivity extends AppCompatActivity {
         long standingStartMs = getIntent().getLongExtra(EXTRA_STANDING_START_MS, -1);
         long lowestAngleMs = getIntent().getLongExtra(EXTRA_LOWEST_ANGLE_MS, -1);
         long returnToStandingMs = getIntent().getLongExtra(EXTRA_RETURN_TO_STANDING_MS, -1);
+        long targetDurationMs = getIntent().getLongExtra(EXTRA_TARGET_DURATION_MS, -1);
+        long targetToleranceMs = getIntent().getLongExtra(EXTRA_TARGET_TOLERANCE_MS, -1);
 
         int messageResource = R.string.lowering_feedback_unavailable;
         int detectionMessageResource = R.string.insufficient_evidence;
@@ -66,6 +71,18 @@ public class ResultsActivity extends AppCompatActivity {
         }
         else {
             sampledTextTimes.setText(R.string.sampled_times_unavailable);
+        }
+
+        if (targetToleranceMs >= 0 && targetToleranceMs < targetDurationMs) {
+            double targetDurationSeconds = targetDurationMs/1000.0;
+            double targetToleranceSeconds = targetToleranceMs/1000.0;
+
+            String practiceTarget = getString(R.string.practice_target_details, targetDurationSeconds, targetToleranceSeconds);
+
+            practiceTargetText.setText(practiceTarget);
+        }
+        else {
+            practiceTargetText.setText(R.string.practice_target_unavailable);
         }
 
         loweringFeedbackText.setText(messageResource);

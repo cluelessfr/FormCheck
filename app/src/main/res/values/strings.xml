@@ -25,5 +25,8 @@
     <string name="lowering_feedback_unavailable">Lowering feedback is unavailable for this analysis.</string>
     <string name="analysis_results_preview">Sampled video times will appear here.</string>
     <string name="sampled_times_unavailable">Sampled video times are unavailable for this analysis</string>
+    <string name="practice_target_preview">Selected practice target: 4.00 s; comparison tolerance: ±0.50 s.</string>
+    <string name="practice_target_details">Selected practice target: %1$.2f s; comparison tolerance: ±%2$.2f s.</string>
+    <string name="practice_target_unavailable">No practice target selected.</string>
     <string-array name="lowering_target_options"><item>No target</item><item>1 second</item><item>2 seconds</item><item>3 seconds</item><item>4 seconds</item></string-array>
 </resources>
