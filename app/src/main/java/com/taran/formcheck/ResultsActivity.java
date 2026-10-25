@@ -23,6 +23,10 @@ public class ResultsActivity extends AppCompatActivity {
     public static final String EXTRA_TARGET_DURATION_MS = "com.taran.formcheck.extra.TARGET_DURATION_MS";
     public static final String EXTRA_TARGET_TOLERANCE_MS = "com.taran.formcheck.extra.TARGET_TOLERANCE_MS";
     public static final String EXTRA_RECORDING_SUITABILITY = "com.taran.formcheck.extra.RECORDING_SUITABILITY";
+    public static final String EXTRA_LOWERING_START_MS = "com.taran.formcheck.extra.LOWERING_START_MS";
+    public static final String EXTRA_LOWERING_BOTTOM_MS = "com.taran.formcheck.extra.LOWERING_BOTTOM_MS";
+    public static final String EXTRA_MINIMUM_DURATION_MS = "com.taran.formcheck.extra.MINIMUM_DURATION_MS";
+    public static final String EXTRA_MAXIMUM_DURATION_MS = "com.taran.formcheck.extra.MAXIMUM_DURATION_MS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,8 @@ public class ResultsActivity extends AppCompatActivity {
         TextView sampledTextTimes = findViewById(R.id.sampledTimesText);
         TextView practiceTargetText = findViewById(R.id.practiceTargetText);
         TextView recordingStatusText = findViewById(R.id.recordingStatusText);
+        TextView loweringTimingText = findViewById(R.id.loweringTimingText);
+        TextView loweringDurationText = findViewById(R.id.loweringDurationText);
 
         String receivedOutcome = getIntent().getStringExtra(EXTRA_FEEDBACK_OUTCOME);
         String receivedAnalysisOutcome = getIntent().getStringExtra(EXTRA_ANALYSIS_OUTCOME);
@@ -45,6 +51,11 @@ public class ResultsActivity extends AppCompatActivity {
         long returnToStandingMs = getIntent().getLongExtra(EXTRA_RETURN_TO_STANDING_MS, -1);
         long targetDurationMs = getIntent().getLongExtra(EXTRA_TARGET_DURATION_MS, -1);
         long targetToleranceMs = getIntent().getLongExtra(EXTRA_TARGET_TOLERANCE_MS, -1);
+        long loweringStartMs = getIntent().getLongExtra(EXTRA_LOWERING_START_MS, -1);
+        long loweringBottomMs = getIntent().getLongExtra(EXTRA_LOWERING_BOTTOM_MS, -1);
+        long durationMs = loweringBottomMs - loweringStartMs;
+        long minimumDurationMs = getIntent().getLongExtra(EXTRA_MINIMUM_DURATION_MS, -1);
+        long maximumDurationMs = getIntent().getLongExtra(EXTRA_MAXIMUM_DURATION_MS, -1);
 
         int messageResource = R.string.lowering_feedback_unavailable;
         int detectionMessageResource = R.string.insufficient_evidence;
@@ -95,6 +106,31 @@ public class ResultsActivity extends AppCompatActivity {
         }
         else if (RecordingSuitability.UNSUPPORTED_VIEW.name().equals(receivedRecordingSuitability)){
             recordingMessageResource = R.string.recording_status_unsupported;
+        }
+
+        if (!(loweringStartMs < 0) && loweringBottomMs > loweringStartMs) {
+            double loweringStartSeconds = loweringStartMs/1000.0;
+            double loweringBottomSeconds = loweringBottomMs/1000.0;
+            double durationSeconds = durationMs/1000.0;
+
+            String loweringTimings = getString(R.string.lowering_timing_valid, loweringStartSeconds, loweringBottomSeconds, durationSeconds);
+
+            loweringTimingText.setText(loweringTimings);
+        }
+        else {
+            loweringTimingText.setText(R.string.lowering_timing_invalid);
+        }
+
+        if (minimumDurationMs > 0 && maximumDurationMs >= minimumDurationMs) {
+            double minimumDurationSeconds = minimumDurationMs/1000.0;
+            double maximumDurationSeconds = maximumDurationMs/1000.0;
+
+            String loweringDuration = getString(R.string.lowering_duration_valid, minimumDurationSeconds, maximumDurationSeconds);
+
+            loweringDurationText.setText(loweringDuration);
+        }
+        else {
+            loweringDurationText.setText(R.string.lowering_duration_invalid);
         }
 
         loweringFeedbackText.setText(messageResource);

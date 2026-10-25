@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.util.Log;
 
 import com.taran.formcheck.analysis.LandmarkQualityGate;
+import com.taran.formcheck.feedback.LoweringDurationRange;
 import com.taran.formcheck.feedback.LoweringFeedbackAnalyzer;
 import com.taran.formcheck.feedback.LoweringFeedbackOutcome;
 import com.taran.formcheck.feedback.LoweringPracticeTarget;
@@ -38,6 +39,7 @@ import com.taran.formcheck.video.VideoFrameDecoder;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
@@ -192,6 +194,20 @@ public class MainActivity extends AppCompatActivity {
                         if (target != null) {
                             intent.putExtra(ResultsActivity.EXTRA_TARGET_DURATION_MS, target.getTargetDurationMS());
                             intent.putExtra(ResultsActivity.EXTRA_TARGET_TOLERANCE_MS, target.getComparisonToleranceMS());
+                        }
+
+                        if (result.getLoweringTiming().isPresent()) {
+                            intent.putExtra(ResultsActivity.EXTRA_LOWERING_START_MS, result.getLoweringTiming().get().getLoweringStart());
+                            intent.putExtra(ResultsActivity.EXTRA_LOWERING_BOTTOM_MS, result.getLoweringTiming().get().getBottomReached());
+                        }
+
+                        if (result.getLoweringTiming().isPresent()) {
+                            Optional<LoweringDurationRange> loweringDurationRange = LoweringDurationRange.fromTiming(result.getLoweringTiming().get());
+
+                            if (loweringDurationRange.isPresent()) {
+                                intent.putExtra(ResultsActivity.EXTRA_MINIMUM_DURATION_MS, loweringDurationRange.get().getMinimumDurationMs());
+                                intent.putExtra(ResultsActivity.EXTRA_MAXIMUM_DURATION_MS, loweringDurationRange.get().getMaximumDurationMs());
+                            }
                         }
 
                         startActivity(intent);

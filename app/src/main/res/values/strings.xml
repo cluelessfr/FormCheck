@@ -32,5 +32,11 @@
     <string name="recording_status_confirmed">Recording: side view and whole-body visibility confirmed by you.</string>
     <string name="recording_status_unconfirmed">Recording: side view and whole-body visibility have not been confirmed.</string>
     <string name="recording_status_unsupported">Recording: this view is unsupported for lowering feedback.</string>
+    <string name="lowering_timing_preview">Sampled lowering timings will appear here.</string>
+    <string name="lowering_timing_valid">Estimated lowering — start: %1$.2f s; bottom: %2$.2f s; duration: %3$.2f s.</string>
+    <string name="lowering_timing_invalid">Estimated lowering timing is unavailable for this analysis.</string>
+    <string name="lowering_duration_preview">Lowering duration range will appear here</string>
+    <string name="lowering_duration_valid">Sampling-based duration range: %1$.2f–%2$.2f s. This reflects frame sampling only; other measurement errors are not included.</string>
+    <string name="lowering_duration_invalid">Sampling-based duration range is unavailable.</string>
     <string-array name="lowering_target_options"><item>No target</item><item>1 second</item><item>2 seconds</item><item>3 seconds</item><item>4 seconds</item></string-array>
 </resources>
