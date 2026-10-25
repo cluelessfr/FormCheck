@@ -42,4 +42,10 @@
     <string name="measured_angles_preview">Estimated knee angles will appear here.</string>
     <string name="measured_angles_valid">Estimated knee angles — standing: %1$.1f°; lowest: %2$.1f°; return to standing: %3$.1f°.</string>
     <string name="measured_angles_unavailable">Estimated knee angles are unavailable for this analysis.</string>
+    <string name="lowering_feedback_recording_required">Lowering feedback requires your confirmation of a clear side view with the whole body visible.</string>
+    <string name="lowering_feedback_target_required">Select a practice target to receive lowering feedback.</string>
+    <string name="lowering_feedback_repetition_unavailable">Lowering feedback is unavailable because a complete repetition was not detected.</string>
+    <string name="lowering_feedback_timing_unavailable">Lowering feedback is unavailable because lowering timing could not be estimated.</string>
+    <string name="lowering_feedback_range_unavailable">Lowering feedback is unavailable because a sampling-based duration range could not be formed.</string>
+    <string name="lowering_feedback_ambiguous_range">The sampling-based duration range crosses a comparison boundary, so no single target comparison is available.</string>
 </resources>

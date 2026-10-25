@@ -77,6 +77,26 @@ public class ResultsActivity extends AppCompatActivity {
         else if (LoweringFeedbackOutcome.LONGER_THAN_TARGET.name().equals(receivedOutcome)) {
             messageResource = R.string.lowering_feedback_longer;
         }
+        else if (LoweringFeedbackOutcome.UNAVAILABLE.name().equals(receivedOutcome)) {
+            if (!RecordingSuitability.CONFIRMED_SIDE_VIEW.name().equals(receivedRecordingSuitability)) {
+                messageResource = R.string.lowering_feedback_recording_required;
+            }
+            else if (!(targetToleranceMs >= 0 && targetToleranceMs < targetDurationMs)) {
+                messageResource = R.string.lowering_feedback_target_required;
+            }
+            else if (!SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED.name().equals(receivedAnalysisOutcome)) {
+                messageResource = R.string.lowering_feedback_repetition_unavailable;
+            }
+            else if (!(loweringStartMs >= 0 && loweringBottomMs > loweringStartMs)) {
+                messageResource = R.string.lowering_feedback_timing_unavailable;
+            }
+            else if (!(minimumDurationMs > 0 && maximumDurationMs >= minimumDurationMs)) {
+                messageResource = R.string.lowering_feedback_range_unavailable;
+            }
+            else {
+                messageResource = R.string.lowering_feedback_ambiguous_range;
+            }
+        }
 
         if (SquatAnalysisOutcome.COMPLETE_REPETITION_DETECTED.name().equals(receivedAnalysisOutcome)) {
             detectionMessageResource = R.string.complete_repetition_detected;
