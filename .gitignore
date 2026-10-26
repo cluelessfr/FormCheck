@@ -17,3 +17,5 @@ local.properties
 /.idea/deploymentTargetSelector.xml
 /.idea/deviceManager.xml
 /.idea/dictionaries/
+
+/docs/AI_USE_LOG.md
