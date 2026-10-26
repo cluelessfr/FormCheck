@@ -8,7 +8,7 @@ AI assistance is documented in [AI_USE_LOG.md](docs/AI_USE_LOG.md).
 
 **[Download FormCheck 1.0 for Android](https://github.com/cluelessfr/FormCheck/releases/download/v1.0/FormCheck-1.0.apk)**
 
-- Requires Android 7.0 (API 24) or later.
+- Supported platform: Android 7.0 (API 24) or later. There is no iOS version.
 - The signed APK is approximately 60.6 MB.
 - [Release notes and SHA-256 checksum](https://github.com/cluelessfr/FormCheck/releases/tag/v1.0).
 
@@ -67,6 +67,17 @@ These screenshots illustrate the app interface and example outputs; they do not 
 - Comparison with your selected target: shorter, near, longer, or unavailable with an explanation.
 
 Sampled video times are positions within the video. The lowest-angle sample and the estimated lowering-bottom boundary are separate measurements and may have different timestamps. Missing measurements are displayed as unavailable.
+
+## Permissions and offline use
+
+- **Selected video:** Android's system file picker grants read access to the video you choose so FormCheck can analyze it. The app attempts to retain that file-specific access for reuse; it does not request access to your entire photo or video library.
+- **Camera, microphone, and broad storage access:** not requested. FormCheck analyzes prerecorded videos rather than recording them.
+- **Internet and network state:** the version 1.0 APK declares `INTERNET` and `ACCESS_NETWORK_STATE`, contributed by bundled Google DataTransport dependencies. These allow network communication and connectivity checks without a runtime permission prompt. FormCheck's video-analysis flow processes the selected video locally using the bundled pose model and does not require a hosted backend. These declared permissions mean the APK should not be described as having no network capability.
+- **Internal receiver protection:** AndroidX adds the signature-level `com.taran.formcheck.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` to protect internal broadcast receivers. It does not require a user permission prompt.
+
+For offline analysis, choose a video already stored on your device. A cloud-backed file provider may need Internet access to retrieve a video before FormCheck can read it.
+
+The Android setting that allows installation from your browser or file manager is needed for sideloading the APK; it is not a permission FormCheck requests to analyze videos.
 
 ## Privacy and limitations
 
