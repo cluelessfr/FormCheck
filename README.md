@@ -16,6 +16,36 @@ Download the `.apk` file, open it on your Android device, and follow the install
 
 If you previously installed a debug version, you may need to uninstall it first because it uses a different signing key. Uninstalling clears FormCheck's app data. The source-code ZIP on the release page is for development; install the APK to use the app.
 
+## Demo video and screenshots
+
+All five screenshots below and the demo video were captured on an Android emulator. They show example app behavior in that environment; they do not establish measurement accuracy or physical-device performance.
+
+### Video walkthrough
+
+[Watch or download the FormCheck emulator demo (MP4, 1 min 20 sec, approximately 33 MB)](docs/media/formcheck-emulator-demo.mp4)
+
+The recording has no audible narration. It shows selecting a video and a four-second practice target, processing frames, viewing a detected repetition, cancelling another analysis, and viewing an insufficient-evidence result. The final sequence selects an invalid test file and shows the analysis-failure message.
+
+### Home and video selection
+
+| Home screen | Analysis complete |
+| --- | --- |
+| <img src="docs/screenshots/home.png" alt="FormCheck home screen before selecting a video" width="280"> | <img src="docs/screenshots/analysis-complete.png" alt="Video selected with a four-second practice target and analysis complete" width="280"> |
+
+### Landscape view
+
+<img src="docs/screenshots/landscape.png" alt="FormCheck video selection screen in landscape orientation" width="700">
+
+This landscape capture shows the upper portion of the screen; the analysis controls are not visible in this image.
+
+### Example results
+
+| Complete repetition detected | Measurements unavailable |
+| --- | --- |
+| <img src="docs/screenshots/results-detected.png" alt="Results showing a detected complete repetition and estimated lowering duration shorter than the selected practice target" width="280"> | <img src="docs/screenshots/results-unavailable.png" alt="Results showing insufficient evidence and unavailable timing and knee-angle measurements" width="280"> |
+
+These screenshots illustrate the app interface and example outputs; they do not establish measurement accuracy.
+
 ## How to use it
 
 1. Open FormCheck and tap **Select a video**.
