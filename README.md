@@ -2,8 +2,6 @@
 
 FormCheck is an experimental Android app that analyzes prerecorded squat videos on your device. It detects the first complete repetition supported by the sampled observations, displays estimated knee angles and video times, and compares estimated lowering duration with an optional practice target you choose.
 
-AI assistance is documented in [AI_USE_LOG.md](docs/AI_USE_LOG.md).
-
 ## Download
 
 **[Download FormCheck 1.0 for Android](https://github.com/cluelessfr/FormCheck/releases/download/v1.0/FormCheck-1.0.apk)**
