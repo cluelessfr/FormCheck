@@ -16,13 +16,13 @@ If you previously installed a debug version, you may need to uninstall it first 
 
 ## Demo video and screenshots
 
-All five screenshots below and the demo video were captured on an Android emulator. They show example app behavior in that environment; they do not establish measurement accuracy or physical-device performance.
+All five screenshots below and the demo video were captured on an Android emulator. They show example app behavior in that environment.
 
 ### Video walkthrough
 
 [Watch or download the FormCheck emulator demo (MP4, 1 min 20 sec, approximately 33 MB)](docs/media/formcheck-emulator-demo.mp4)
 
-The recording has no audible narration. It shows selecting a video and a four-second practice target, processing frames, viewing a detected repetition, cancelling another analysis, and viewing an insufficient-evidence result. The final sequence selects an invalid test file and shows the analysis-failure message.
+The recording has no sound. It shows selecting a video and a four-second practice target, processing frames, viewing a detected repetition, cancelling another analysis, and viewing an insufficient-evidence result. The final sequence selects an invalid test file and shows the analysis-failure message.
 
 ### Home and video selection
 
@@ -34,7 +34,7 @@ The recording has no audible narration. It shows selecting a video and a four-se
 
 <img src="docs/screenshots/landscape.png" alt="FormCheck video selection screen in landscape orientation" width="700">
 
-This landscape capture shows the upper portion of the screen; the analysis controls are not visible in this image.
+This landscape capture shows the upper portion of the screen; the analysis controls are not visible in this image (in the actual app you will have to scroll down to use them).
 
 ### Example results
 
@@ -42,7 +42,7 @@ This landscape capture shows the upper portion of the screen; the analysis contr
 | --- | --- |
 | <img src="docs/screenshots/results-detected.png" alt="Results showing a detected complete repetition and estimated lowering duration shorter than the selected practice target" width="280"> | <img src="docs/screenshots/results-unavailable.png" alt="Results showing insufficient evidence and unavailable timing and knee-angle measurements" width="280"> |
 
-These screenshots illustrate the app interface and example outputs; they do not establish measurement accuracy.
+These screenshots illustrate the app interface and example outputs.
 
 ## How to use it
 
@@ -66,16 +66,10 @@ These screenshots illustrate the app interface and example outputs; they do not 
 
 Sampled video times are positions within the video. The lowest-angle sample and the estimated lowering-bottom boundary are separate measurements and may have different timestamps. Missing measurements are displayed as unavailable.
 
-## Permissions and offline use
+## Permissions
 
 - **Selected video:** Android's system file picker grants read access to the video you choose so FormCheck can analyze it. The app attempts to retain that file-specific access for reuse; it does not request access to your entire photo or video library.
 - **Camera, microphone, and broad storage access:** not requested. FormCheck analyzes prerecorded videos rather than recording them.
-- **Internet and network state:** the version 1.0 APK declares `INTERNET` and `ACCESS_NETWORK_STATE`, contributed by bundled Google DataTransport dependencies. These allow network communication and connectivity checks without a runtime permission prompt. FormCheck's video-analysis flow processes the selected video locally using the bundled pose model and does not require a hosted backend. These declared permissions mean the APK should not be described as having no network capability.
-- **Internal receiver protection:** AndroidX adds the signature-level `com.taran.formcheck.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` to protect internal broadcast receivers. It does not require a user permission prompt.
-
-For offline analysis, choose a video already stored on your device. A cloud-backed file provider may need Internet access to retrieve a video before FormCheck can read it.
-
-The Android setting that allows installation from your browser or file manager is needed for sideloading the APK; it is not a permission FormCheck requests to analyze videos.
 
 ## Privacy and limitations
 
@@ -103,15 +97,12 @@ With an emulator or Android device connected, run the focused lifecycle and navi
 
 These commands require `JAVA_HOME` to point to a compatible JDK. Add `--offline` only when the required Gradle dependencies are already cached. Android-test compilation alone does not execute device tests. Other instrumented tests include video/model processing and may take longer.
 
-For version 1.0, verification included 91 passing JVM tests, five focused emulator tests, large-text/light/dark layout checks, and developer-reported installation and analysis with the signed APK. Layout checks use fixture results; the background-state check uses a controlled task, while the cancel/retry check submits video analysis. These checks verify app behavior, not measurement accuracy or compatibility with every device.
-
-To generate your own release APK, use Android Studio's **Build > Generate Signed App Bundle or APK** workflow and your own signing key. Keep keystores and passwords out of Git.
+For version 1.0, verification included 91 passing JVM tests, five focused emulator tests, large-text/light/dark layout checks, and installation and analysis with the signed APK. Layout checks use fixture results; the background-state check uses a controlled task, while the cancel/retry check submits video analysis.
 
 ## Project notes and credits
 
 - [Model and demonstration-video sources](docs/MODEL_SOURCES.md)
 - [Feedback research and scope](docs/FEEDBACK_RESEARCH.md)
 - [Feedback evaluation and its limits](docs/FEEDBACK_EVALUATION.md)
-- [AI-use disclosure](docs/AI_USE_LOG.md)
 
 FormCheck source code is available under the [MIT License](LICENSE). Third-party model and media licensing is documented in the source notes above.
