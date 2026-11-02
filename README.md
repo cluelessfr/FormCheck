@@ -1,6 +1,6 @@
 # FormCheck
 
-FormCheck is an experimental Android app that analyzes prerecorded squat videos on your device. It detects the first complete repetition supported by the sampled observations, displays estimated knee angles and video times, and compares estimated lowering duration with an optional practice target you choose.
+When I started working out I noticed that there wasn't much way for me to check my form during my workouts. Because of this I was inspired to build FormCheck, an android app that helps you check your form. At first, I wanted to make this work with a variety of workouts, but time constraints and complexity led to me only being able to make this app work for squats. Nevertheless, I think it works pretty well and gives some pretty useful information. I put a lot of effort into this, so I hope you like it!
 
 ## Download
 
@@ -8,15 +8,15 @@ FormCheck is an experimental Android app that analyzes prerecorded squat videos 
 
 - Supported platform: Android 7.0 (API 24) or later. There is no iOS version.
 - The signed APK is approximately 60.6 MB.
-- [Release notes and SHA-256 checksum](https://github.com/cluelessfr/FormCheck/releases/tag/v1.0).
+- [Release notes](https://github.com/cluelessfr/FormCheck/releases/tag/v1.0).
 
-Download the `.apk` file, open it on your Android device, and follow the installation prompts. Android may ask you to allow installation from the browser or file manager you used. Installation availability also depends on device policies and Android developer-verification requirements in your region.
+Download the `.apk` file, open it on your Android device, and follow the installation prompts. Android may ask you to allow installation from the browser or file manager you used.
 
 If you previously installed a debug version, you may need to uninstall it first because it uses a different signing key. Uninstalling clears FormCheck's app data. The source-code ZIP on the release page is for development; install the APK to use the app.
 
 ## Demo video and screenshots
 
-All five screenshots below and the demo video were captured on an Android emulator. They show example app behavior in that environment.
+All five screenshots below and the demo video were captured on an Android emulator. They show example app behavior of the app.
 
 ### Video walkthrough
 
@@ -77,25 +77,11 @@ Video processing happens locally. FormCheck does not upload your selected video,
 
 FormCheck is an educational prototype. It does not assess exercise safety, provide medical advice, or assign a good-form score. Timing, angles, and detection thresholds are experimental and have not been independently validated for broad accuracy.
 
-The app samples frames every 250 milliseconds. Its sampling-based duration range reflects frame sampling only; it does not account for all pose-estimation, camera, perspective, or algorithm errors. Feedback is withheld when the range does not support a single comparison category. Occlusion, unclear landmarks, gaps, and unsuitable views can limit results. Only the first detected complete repetition is reported.
+The app samples frames every 250 milliseconds. Its sampling-based duration range reflects frame sampling only; it does not account for all pose-estimation, camera, perspective, or algorithm errors. Feedback is withheld when the range does not support a single comparison category. Blocked, unclear landmarks, gaps, and unsuitable views can limit results. Only the first detected complete repetition is reported.
 
 ## Development
 
 The app uses Java, XML layouts, and MediaPipe Pose Landmarker Full. Open this repository in Android Studio with Android SDK 37 installed. Use Android Studio's bundled JDK and the included Gradle wrapper; local SDK paths belong in the untracked `local.properties` file.
-
-From the repository root on Windows PowerShell:
-
-```powershell
-.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestJavaWithJavac
-```
-
-With an emulator or Android device connected, run the focused lifecycle and navigation checks:
-
-```powershell
-.\gradlew.bat :app:connectedDebugAndroidTest "-Pandroid.testInstrumentationRunnerArguments.class=com.taran.formcheck.ActivityLifecycleInstrumentedTest"
-```
-
-These commands require `JAVA_HOME` to point to a compatible JDK. Add `--offline` only when the required Gradle dependencies are already cached. Android-test compilation alone does not execute device tests. Other instrumented tests include video/model processing and may take longer.
 
 For version 1.0, verification included 91 passing JVM tests, five focused emulator tests, large-text/light/dark layout checks, and installation and analysis with the signed APK. Layout checks use fixture results; the background-state check uses a controlled task, while the cancel/retry check submits video analysis.
 
